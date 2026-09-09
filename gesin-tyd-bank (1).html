@@ -4,25 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Ons Gesin se Tyd-bank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Figtree:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-deep:#1F2B2F;
-    --bg:#28363B;
-    --bg-soft:#324349;
-    --paper:#F7EFE0;
-    --paper-line:#E2D4B0;
+    --bg:#F5EFE1;
+    --bg-deep:#EEE4CE;
+    --paper:#FFFFFF;
     --ink:#28363B;
-    --ink-soft:#4B5C5C;
-    --cream:#F2E9D8;
-    --muted:#9FB0AC;
+    --ink-soft:#5C6E6E;
+    --muted:#8B9490;
     --gold:#D9A441;
     --gold-deep:#B8852E;
+    --gold-tint:#FBF0DA;
     --sage:#7A9471;
     --sage-deep:#56705A;
+    --sage-tint:#E7EEE2;
     --clay:#C1572C;
     --clay-deep:#9C4520;
-    --shadow:rgba(15,20,22,0.4);
-    --radius:16px;
+    --clay-tint:#F7E4D9;
+    --sky:#4C7A93;
+    --sky-tint:#DDEAF0;
+    --shadow:rgba(40,54,59,0.10);
+    --shadow-deep:rgba(40,54,59,0.18);
+    --radius:20px;
     --font-display:'Fraunces', serif;
     --font-body:'Figtree', sans-serif;
     --font-mono:'Space Mono', monospace;
@@ -31,363 +37,270 @@
   html,body{margin:0;padding:0;}
   body{
     font-family:var(--font-body);
-    background:
-      radial-gradient(circle at 15% 8%, rgba(217,164,65,0.07), transparent 40%),
-      radial-gradient(circle at 85% 92%, rgba(122,148,113,0.08), transparent 45%),
-      var(--bg-deep);
-    color:var(--cream);
+    background:var(--bg);
+    background-image: radial-gradient(circle at 10% 0%, rgba(217,164,65,0.10), transparent 38%),
+      radial-gradient(circle at 95% 30%, rgba(122,148,113,0.10), transparent 42%);
+    color:var(--ink);
     min-height:100vh;
     -webkit-font-smoothing:antialiased;
   }
-  #app{
-    max-width:560px;
-    margin:0 auto;
-    min-height:100vh;
-    padding:18px 16px 48px;
-    position:relative;
-  }
+  #app{max-width:520px;margin:0 auto;min-height:100vh;padding:18px 16px 56px;position:relative;}
   .hidden{display:none !important;}
-  .eyebrow{
-    font-family:var(--font-mono);
-    font-size:11px;
-    letter-spacing:2.5px;
-    text-transform:uppercase;
-    color:var(--gold);
-    display:block;
-    margin-bottom:6px;
-  }
   h1,h2,h3{font-family:var(--font-display);margin:0;font-weight:600;}
   button{font-family:var(--font-body);cursor:pointer;}
   input,select,textarea{font-family:var(--font-body);}
-  ::selection{background:var(--gold);color:var(--ink);}
-
+  ::selection{background:var(--gold);color:#fff;}
+  a{color:inherit;}
+ 
   /* ---------- loading ---------- */
-  #loading-screen{
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    min-height:80vh;gap:14px;text-align:center;
-  }
-  .pin-spinner{
-    width:34px;height:34px;border-radius:50%;
-    border:3px solid rgba(217,164,65,0.25);
-    border-top-color:var(--gold);
-    animation:spin 0.9s linear infinite;
-  }
+  #loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;gap:14px;text-align:center;}
+  .pin-spinner{width:34px;height:34px;border-radius:50%;border:3px solid rgba(217,164,65,0.25);border-top-color:var(--gold);animation:spin 0.9s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
   #loading-text{color:var(--muted);font-size:14px;}
-
-  /* ---------- board header ---------- */
-  .board-header{text-align:center;padding:18px 6px 22px;}
-  .board-header h1{font-size:clamp(26px,6.5vw,38px);color:var(--cream);line-height:1.1;}
-  .date-sub{color:var(--muted);font-size:13px;margin-top:8px;font-family:var(--font-mono);}
-
-  /* ---------- pinned card base ---------- */
-  .card{
-    background:var(--paper);
-    color:var(--ink);
-    border-radius:var(--radius);
-    padding:22px 18px 18px;
-    margin-bottom:18px;
-    position:relative;
-    box-shadow:0 10px 24px var(--shadow), 0 1px 0 rgba(255,255,255,0.06) inset;
-  }
-  .card::before{
-    content:"";
-    position:absolute; top:-7px; left:50%; transform:translateX(-50%);
-    width:14px;height:14px;border-radius:50%;
-    background:radial-gradient(circle at 35% 30%, #fff8 0%, var(--gold) 45%, var(--gold-deep) 100%);
-    box-shadow:0 3px 5px rgba(0,0,0,0.45);
-  }
-  .card .eyebrow{color:var(--gold-deep);}
-
-  /* ---------- profile select ---------- */
-  .profile-grid{display:flex;flex-direction:column;gap:14px;}
-  .profile-card{
-    background:var(--paper);color:var(--ink);
-    border-radius:var(--radius);
-    padding:18px 18px 16px;
-    display:flex;align-items:center;justify-content:space-between;
-    border:none; width:100%; text-align:left;
-    box-shadow:0 8px 18px var(--shadow);
-    transition:transform 0.15s ease, box-shadow 0.15s ease;
-    position:relative;
-    overflow:hidden;
-  }
-  .profile-card:hover{transform:translateY(-2px);box-shadow:0 12px 22px var(--shadow);}
-  .profile-card:active{transform:translateY(0px) scale(0.99);}
-  .profile-card .stripe{
-    position:absolute; left:0; top:0; bottom:0; width:6px;
-  }
-  .profile-card .pc-name{font-family:var(--font-display);font-size:21px;font-weight:600;margin-bottom:2px;}
-  .profile-card .pc-age{color:var(--ink-soft);font-size:13px;font-family:var(--font-mono);}
-  .profile-card .pc-balance{font-family:var(--font-mono);font-size:13px;font-weight:700;text-align:right;}
-  .profile-card .pc-balance .num{font-size:20px;display:block;}
-  .parent-link{
-    display:block; width:100%; margin-top:8px;
-    background:none; border:1.5px dashed rgba(242,233,216,0.35);
-    color:var(--cream); border-radius:12px; padding:14px;
-    font-size:14px; letter-spacing:0.3px;
-    transition:border-color 0.15s ease, background 0.15s ease;
-  }
-  .parent-link:hover{border-color:var(--gold);background:rgba(217,164,65,0.08);}
-
+ 
+  /* ---------- header ---------- */
+  .board-header{padding:10px 2px 20px;}
+  .board-header .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:1.5px;color:var(--gold-deep);}
+  .board-header h1{font-size:clamp(24px,6.5vw,32px);color:var(--ink);line-height:1.15;margin-top:4px;}
+  .date-sub{color:var(--muted);font-size:13px;margin-top:6px;}
+ 
   /* ---------- top nav ---------- */
-  .topbar{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
-  .topbar button{
-    background:none;border:1px solid rgba(242,233,216,0.3);color:var(--cream);
-    border-radius:10px;padding:8px 12px;font-size:13px;
+  .topbar{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+  .topbar button{background:var(--paper);border:1px solid var(--bg-deep);color:var(--ink);border-radius:10px;padding:8px 13px;font-size:13.5px;box-shadow:0 2px 6px var(--shadow);}
+  .topbar button:hover{border-color:var(--gold);color:var(--gold-deep);}
+  .topbar .kid-title{font-family:var(--font-display);font-size:19px;color:var(--ink);}
+ 
+  /* ---------- generic card ---------- */
+  .card{background:var(--paper);border-radius:var(--radius);padding:20px 18px;margin-bottom:16px;box-shadow:0 6px 18px var(--shadow);}
+  .card .eyebrow{font-family:var(--font-mono);font-size:10.5px;letter-spacing:1.3px;color:var(--gold-deep);display:block;margin-bottom:8px;}
+ 
+  /* ---------- dashboard grid ---------- */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+  .dash-card{
+    background:var(--paper);border-radius:18px;padding:18px 16px;text-align:left;border:none;
+    display:flex;flex-direction:column;justify-content:space-between;min-height:132px;
+    box-shadow:0 4px 14px var(--shadow); position:relative; transition:transform 0.12s ease, box-shadow 0.12s ease;
   }
-  .topbar button:hover{border-color:var(--gold);color:var(--gold);}
-  .topbar .kid-title{font-family:var(--font-display);font-size:20px;color:var(--cream);}
-
-  /* ---------- bank card / timer ---------- */
+  .dash-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px var(--shadow-deep);}
+  .dash-card:active{transform:translateY(0) scale(0.98);}
+  .dash-card .dc-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+  .dash-card .dc-title{font-family:var(--font-display);font-size:16.5px;font-weight:600;margin-top:12px;color:var(--ink);}
+  .dash-card .dc-sub{font-size:12px;color:var(--ink-soft);margin-top:3px;line-height:1.3;}
+  .dash-card .dc-dot{position:absolute; top:16px; right:16px; width:9px;height:9px;border-radius:50%;background:var(--clay);}
+  .ic-gold{background:var(--gold-tint);}
+  .ic-sage{background:var(--sage-tint);}
+  .ic-clay{background:var(--clay-tint);}
+  .ic-sky{background:var(--sky-tint);}
+  .wide-card{grid-column:1 / -1;}
+ 
+  /* ---------- affirmation banner ---------- */
+  .affirmation-banner{background:linear-gradient(160deg, var(--gold-tint) 0%, var(--paper) 100%);border-radius:var(--radius);padding:20px 18px;margin-bottom:16px;box-shadow:0 6px 18px var(--shadow);}
+  .affirmation-banner .eyebrow{color:var(--gold-deep);}
+  .affirmation-text{font-family:var(--font-display);font-size:18px;line-height:1.4;font-style:italic;margin:4px 0 6px;color:var(--ink);}
+  .affirmation-ref{font-family:var(--font-mono);font-size:11.5px;color:var(--gold-deep);}
+ 
+  /* ---------- profile select ---------- */
+  .profile-grid{display:flex;flex-direction:column;gap:13px;}
+  .profile-card{
+    background:var(--paper);color:var(--ink);border-radius:18px;padding:17px 18px;
+    display:flex;align-items:center;justify-content:space-between;border:none;width:100%;text-align:left;
+    box-shadow:0 5px 16px var(--shadow);position:relative;overflow:hidden;
+  }
+  .profile-card .stripe{position:absolute;left:0;top:0;bottom:0;width:6px;}
+  .profile-card .pc-name{font-family:var(--font-display);font-size:20px;font-weight:600;margin-bottom:2px;}
+  .profile-card .pc-age{color:var(--ink-soft);font-size:12.5px;font-family:var(--font-mono);}
+  .profile-card .pc-balance{font-family:var(--font-mono);font-size:12.5px;font-weight:700;text-align:right;color:var(--gold-deep);}
+  .profile-card .pc-balance .num{font-size:19px;display:block;color:var(--ink);}
+  .parent-link{display:block;width:100%;margin-top:10px;background:none;border:1.5px dashed var(--muted);color:var(--ink-soft);border-radius:14px;padding:14px;font-size:14px;}
+  .parent-link:hover{border-color:var(--gold-deep);color:var(--gold-deep);}
+ 
+  /* ---------- bank / timer ---------- */
   .bank-card{text-align:center;}
-  .bank-readout{
-    font-family:var(--font-mono); font-weight:700;
-    font-size:clamp(40px,11vw,58px);
-    letter-spacing:1px; line-height:1;
-    margin:6px 0 2px;
-    color:var(--ink);
-  }
+  .bank-readout{font-family:var(--font-mono);font-weight:700;font-size:clamp(40px,11vw,54px);letter-spacing:1px;line-height:1;margin:6px 0 2px;color:var(--ink);}
   .bank-readout.running{color:var(--clay-deep);}
   .bank-sub{color:var(--ink-soft);font-size:13px;margin-bottom:14px;}
-  .btn-primary{
-    background:var(--gold); color:var(--ink); border:none;
-    border-radius:12px; padding:13px 22px; font-weight:600; font-size:15px;
-    width:100%; transition:transform 0.12s ease, background 0.15s ease;
-  }
+  .btn-primary{background:var(--gold);color:#fff;border:none;border-radius:14px;padding:14px 22px;font-weight:600;font-size:15px;width:100%;transition:transform 0.12s ease, background 0.15s ease;}
   .btn-primary:hover{background:var(--gold-deep);}
   .btn-primary:active{transform:scale(0.98);}
   .btn-primary.stop{background:var(--clay);}
   .btn-primary.stop:hover{background:var(--clay-deep);}
-  .btn-primary:disabled{background:#cdbfa0;color:#7a7263;cursor:not-allowed;}
+  .btn-primary:disabled{background:#E4D8BF;color:#a89a78;cursor:not-allowed;}
   .session-log{margin-top:14px;text-align:left;font-size:12.5px;color:var(--ink-soft);}
-  .session-log .s-row{display:flex;justify-content:space-between;padding:4px 2px;border-bottom:1px dotted var(--paper-line);font-family:var(--font-mono);}
-  .session-log .s-empty{font-style:italic;color:var(--ink-soft);font-family:var(--font-body);}
-
+  .session-log .s-row{display:flex;justify-content:space-between;padding:5px 2px;border-bottom:1px dotted var(--bg-deep);font-family:var(--font-mono);}
+  .session-log .s-empty{font-style:italic;color:var(--muted);font-family:var(--font-body);}
+ 
   /* ---------- ledger rows ---------- */
-  .ledger-row{
-    display:flex;align-items:center;gap:12px;
-    padding:13px 2px;
-    border-bottom:1px dashed var(--paper-line);
-    position:relative;
-    cursor:pointer;
-    user-select:none;
-  }
+  .ledger-row{display:flex;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px dashed var(--bg-deep);position:relative;cursor:pointer;user-select:none;}
   .ledger-row:last-child{border-bottom:none;}
-  .ledger-row input[type="checkbox"]{
-    width:21px;height:21px;flex-shrink:0;accent-color:var(--sage-deep);cursor:pointer;
-  }
+  .ledger-row input[type="checkbox"]{width:22px;height:22px;flex-shrink:0;accent-color:var(--sage-deep);cursor:pointer;}
   .ledger-row .task-name{flex:1;font-size:15px;line-height:1.3;}
-  .ledger-amount{flex-shrink:0;}
   .la-stack{display:flex;flex-direction:column;align-items:flex-end;gap:1px;}
   .la-min{font-family:var(--font-mono);font-weight:700;font-size:14px;color:var(--gold-deep);}
   .la-extra{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-soft);}
   .ledger-row.done .task-name{text-decoration:line-through;opacity:0.5;}
   .ledger-row.done .ledger-amount{opacity:0.45;}
-  .stamp{
-    font-family:var(--font-mono); font-size:10px; letter-spacing:1.5px;
-    color:var(--sage-deep); border:2px solid var(--sage-deep); border-radius:4px;
-    padding:2px 7px; transform:rotate(-9deg);
-    position:absolute; right:8px; top:50%; margin-top:-22px;
-    opacity:0; pointer-events:none;
-  }
+  .stamp{font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;color:var(--sage-deep);border:2px solid var(--sage-deep);border-radius:4px;padding:2px 7px;transform:rotate(-9deg);position:absolute;right:8px;top:50%;margin-top:-22px;opacity:0;pointer-events:none;}
   .stamp.show{animation:stamp-in 0.4s ease-out forwards;}
-  @keyframes stamp-in{
-    0%{transform:rotate(-9deg) scale(2.2);opacity:0;}
-    60%{opacity:0.95;}
-    100%{transform:rotate(-9deg) scale(1);opacity:0.9;}
-  }
-
-  /* ---------- affirmation card ---------- */
-  .affirmation-card{text-align:center;background:linear-gradient(160deg, #FBF4E3 0%, var(--paper) 100%);}
-  .affirmation-text{
-    font-family:var(--font-display); font-size:19px; line-height:1.4; font-style:italic;
-    margin:6px 4px 8px; color:var(--ink);
-  }
-  .affirmation-ref{font-family:var(--font-mono);font-size:12px;color:var(--gold-deep);letter-spacing:0.5px;}
-
-  /* ---------- bible card ---------- */
-  .bible-card .bible-ref{
-    font-family:var(--font-display); font-size:22px; font-weight:600;
-    margin:2px 0 12px;
-  }
+  @keyframes stamp-in{0%{transform:rotate(-9deg) scale(2.2);opacity:0;}60%{opacity:0.95;}100%{transform:rotate(-9deg) scale(1);opacity:0.9;}}
+ 
+  /* ---------- bible ---------- */
+  .bible-ref{font-family:var(--font-display);font-size:21px;font-weight:600;margin:2px 0 12px;}
   .bible-question{font-size:13.5px;color:var(--ink-soft);margin:10px 2px 8px;font-style:italic;}
-  textarea#bible-answer{
-    width:100%; min-height:64px; border-radius:10px; border:1px solid var(--paper-line);
-    background:#FFFCF5; padding:10px 12px; font-size:14px; color:var(--ink);
-    resize:vertical;
-  }
-  textarea#bible-answer:focus, input:focus, select:focus{outline:2px solid var(--gold-deep); outline-offset:1px;}
-
-  /* ---------- date nav (parent) ---------- */
+  textarea#bible-answer{width:100%;min-height:64px;border-radius:12px;border:1px solid var(--bg-deep);background:#FCFAF3;padding:10px 12px;font-size:14px;color:var(--ink);resize:vertical;}
+  textarea#bible-answer:focus, input:focus, select:focus{outline:2px solid var(--gold-deep);outline-offset:1px;}
+ 
+  /* ---------- date nav ---------- */
   .date-nav{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
-  .date-nav button{
-    background:var(--bg-soft);border:1px solid rgba(242,233,216,0.25);color:var(--cream);
-    width:38px;height:38px;border-radius:10px;font-size:16px;
-  }
-  .date-nav input[type="date"]{
-    flex:1; background:var(--paper); color:var(--ink); border:none; border-radius:10px;
-    padding:10px 12px; font-family:var(--font-mono); font-size:14px;
-  }
-
-  /* ---------- parent summary ---------- */
+  .date-nav button{background:var(--paper);border:1px solid var(--bg-deep);color:var(--ink);width:38px;height:38px;border-radius:10px;font-size:16px;}
+  .date-nav input[type="date"]{flex:1;background:var(--paper);color:var(--ink);border:1px solid var(--bg-deep);border-radius:10px;padding:10px 12px;font-family:var(--font-mono);font-size:14px;}
+ 
+  /* ---------- parent kid summary ---------- */
   .kid-summary{margin-bottom:16px;}
   .kid-summary-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
   .kid-summary-head .ks-name{font-family:var(--font-display);font-size:19px;}
-  .kid-summary-head .ks-stats{font-family:var(--font-mono);font-size:13px;color:var(--gold-deep);}
+  .kid-summary-head .ks-stats{font-family:var(--font-mono);font-size:12.5px;color:var(--gold-deep);}
   .ks-balance-row{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:12px;color:var(--ink-soft);margin:0 0 10px;}
   .ks-balance-row .ks-pending{color:var(--clay-deep);font-weight:700;}
-  .ks-task-row{display:flex;align-items:center;gap:8px;padding:6px 2px;font-size:13.5px;border-bottom:1px dotted var(--paper-line);}
+  .ks-task-row{display:flex;align-items:center;gap:8px;padding:6px 2px;font-size:13.5px;border-bottom:1px dotted var(--bg-deep);}
   .ks-task-row:last-child{border-bottom:none;}
   .ks-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
   .ks-dot.on{background:var(--sage-deep);}
-  .ks-dot.off{background:#cfc2a0;}
+  .ks-dot.off{background:#DDD0AE;}
   .ks-task-row .ks-tname.off{color:var(--ink-soft);}
-  .ks-bible-answer{margin-top:8px;font-size:13px;font-style:italic;color:var(--ink-soft);background:#FFFCF5;border-radius:8px;padding:8px 10px;}
-  .ks-reset{
-    margin-top:0;background:none;border:1px solid #cfc2a0;color:var(--clay-deep);
-    border-radius:8px;padding:6px 10px;font-size:12px;
-  }
-  .ks-deduct{
-    background:none;border:1px solid var(--clay);color:var(--clay-deep);
-    border-radius:8px;padding:6px 10px;font-size:12px;
-  }
+  .ks-bible-answer{margin-top:8px;font-size:13px;font-style:italic;color:var(--ink-soft);background:#FCFAF3;border-radius:10px;padding:8px 10px;}
+  .ks-reset{margin-top:0;background:none;border:1px solid var(--bg-deep);color:var(--clay-deep);border-radius:10px;padding:7px 10px;font-size:12px;}
+  .ks-deduct{background:none;border:1px solid var(--clay);color:var(--clay-deep);border-radius:10px;padding:7px 10px;font-size:12px;}
   .ks-actions-row{display:flex;gap:8px;margin-top:10px;}
   .ks-live{font-size:11px;color:var(--clay-deep);font-family:var(--font-mono);margin-left:6px;}
-
-  .parent-actions{display:flex;flex-direction:column;gap:10px;margin-top:6px;}
-  .btn-secondary{
-    background:var(--bg-soft); color:var(--cream); border:1px solid rgba(242,233,216,0.25);
-    border-radius:12px;padding:13px 16px;font-size:14.5px;text-align:left;
-    display:flex;justify-content:space-between;align-items:center;
-  }
-  .btn-secondary:hover{border-color:var(--gold);color:var(--gold);}
-  .btn-secondary .badge-count{font-family:var(--font-mono);font-size:11px;color:var(--clay);}
-
-  /* ---------- manage / editor views ---------- */
-  .editor-row{
-    background:#FFFCF5;border:1px solid var(--paper-line);border-radius:12px;
-    padding:14px;margin-bottom:12px;
-  }
-  .editor-row label{display:block;font-size:11.5px;color:var(--ink-soft);margin-bottom:4px;font-family:var(--font-mono);letter-spacing:0.5px;}
-  .editor-row input[type="text"], .editor-row input[type="number"], .editor-row select{
-    width:100%;padding:9px 10px;border-radius:8px;border:1px solid var(--paper-line);
-    background:#fff;color:var(--ink);font-size:14px;margin-bottom:10px;
-  }
+ 
+  /* ---------- editor rows ---------- */
+  .editor-row{background:#FCFAF3;border:1px solid var(--bg-deep);border-radius:14px;padding:14px;margin-bottom:12px;}
+  .editor-row label{display:block;font-size:11px;color:var(--ink-soft);margin-bottom:4px;font-family:var(--font-mono);letter-spacing:0.4px;}
+  .editor-row input[type="text"], .editor-row input[type="number"], .editor-row select{width:100%;padding:9px 10px;border-radius:9px;border:1px solid var(--bg-deep);background:#fff;color:var(--ink);font-size:14px;margin-bottom:10px;}
   .editor-row .erow-2col{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .editor-row .erow-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
   .editor-row .erow-bottom{display:flex;justify-content:space-between;align-items:center;}
   .editor-row .erow-active{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-soft);}
   .erow-delete{background:none;border:none;color:var(--clay-deep);font-size:13px;text-decoration:underline;}
   .erow-bible-tag{font-size:11px;color:var(--sage-deep);font-family:var(--font-mono);margin-bottom:8px;}
-
-  .btn-add{
-    width:100%;background:none;border:1.5px dashed rgba(242,233,216,0.4);color:var(--cream);
-    border-radius:12px;padding:13px;font-size:14px;margin-bottom:14px;
-  }
-  .btn-add:hover{border-color:var(--gold);color:var(--gold);}
-  .btn-save-bar{
-    background:var(--gold);color:var(--ink);border:none;border-radius:12px;
-    padding:14px;font-weight:600;font-size:15px;width:100%;
-  }
+ 
+  .btn-add{width:100%;background:none;border:1.5px dashed var(--muted);color:var(--ink-soft);border-radius:14px;padding:13px;font-size:14px;margin-bottom:14px;}
+  .btn-add:hover{border-color:var(--gold-deep);color:var(--gold-deep);}
+  .btn-save-bar{background:var(--gold);color:#fff;border:none;border-radius:14px;padding:14px;font-weight:600;font-size:15px;width:100%;}
   .btn-save-bar:hover{background:var(--gold-deep);}
-
+ 
   .rotation-preview{margin-top:18px;}
-  .rotation-preview .rp-row{display:flex;justify-content:space-between;font-size:12.5px;padding:5px 2px;border-bottom:1px dotted var(--paper-line);font-family:var(--font-mono);}
-
-  /* ---------- auth (PIN + parent password) ---------- */
+  .rotation-preview .rp-row{display:flex;justify-content:space-between;font-size:12.5px;padding:5px 2px;border-bottom:1px dotted var(--bg-deep);font-family:var(--font-mono);}
+ 
+  /* ---------- auth ---------- */
   .auth-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:62vh;text-align:center;gap:4px;}
   .auth-icon{font-size:32px;margin-bottom:4px;}
-  .auth-hint{color:var(--muted);font-size:13.5px;margin-top:4px;}
+  .auth-hint{color:var(--ink-soft);font-size:13.5px;margin-top:4px;}
   .pin-dots{display:flex;gap:14px;justify-content:center;margin:22px 0;}
-  .pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--gold);background:transparent;transition:background 0.15s ease, transform 0.15s ease, border-color 0.15s ease;}
-  .pin-dot.filled{background:var(--gold);transform:scale(1.1);}
+  .pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--gold-deep);background:transparent;transition:background 0.15s ease, transform 0.15s ease, border-color 0.15s ease;}
+  .pin-dot.filled{background:var(--gold-deep);transform:scale(1.1);}
   .pin-dot.error{border-color:var(--clay);background:var(--clay);}
   .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:260px;margin:0 auto;width:100%;}
-  .keypad button{background:var(--bg-soft);color:var(--cream);border:1px solid rgba(242,233,216,0.2);border-radius:14px;font-size:22px;font-family:var(--font-mono);padding:16px 0;}
-  .keypad button:hover{border-color:var(--gold);color:var(--gold);}
-  .keypad button.kp-empty{background:none;border:none;visibility:hidden;}
+  .keypad button{background:var(--paper);color:var(--ink);border:1px solid var(--bg-deep);border-radius:14px;font-size:22px;font-family:var(--font-mono);padding:16px 0;box-shadow:0 2px 8px var(--shadow);}
+  .keypad button:hover{border-color:var(--gold-deep);color:var(--gold-deep);}
+  .keypad button.kp-empty{background:none;border:none;box-shadow:none;visibility:hidden;}
   .keypad button.kp-back{font-size:17px;}
-
+ 
   .parent-auth-form{max-width:320px;margin:18px auto 0;width:100%;}
-  .parent-auth-form input{width:100%;padding:13px 14px;border-radius:10px;border:1px solid rgba(242,233,216,0.25);background:rgba(247,239,224,0.06);color:var(--cream);font-size:16px;margin-bottom:12px;text-align:center;letter-spacing:1px;}
-  .parent-auth-form input::placeholder{color:var(--muted);}
+  .parent-auth-form input{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--bg-deep);background:#fff;color:var(--ink);font-size:16px;margin-bottom:12px;text-align:center;letter-spacing:1px;}
   .forgot-link{background:none;border:none;color:var(--muted);font-size:12.5px;text-decoration:underline;margin-top:14px;}
-  .forgot-link:hover{color:var(--gold);}
+  .forgot-link:hover{color:var(--gold-deep);}
   #forgot-password-box{max-width:320px;margin:18px auto 0;width:100%;}
-  #forgot-password-box input{width:100%;padding:11px;border-radius:8px;border:1px solid rgba(242,233,216,0.25);background:rgba(247,239,224,0.06);color:var(--cream);margin-top:8px;text-align:center;}
-
-  /* ---------- rewards / sakgeld ---------- */
+  #forgot-password-box input{width:100%;padding:11px;border-radius:10px;border:1px solid var(--bg-deep);background:#fff;color:var(--ink);margin-top:8px;text-align:center;}
+ 
+  /* ---------- rewards ---------- */
   .balance-stats{display:flex;gap:12px;margin-bottom:4px;}
-  .balance-stat{flex:1;background:#FFFCF5;border:1px solid var(--paper-line);border-radius:14px;padding:16px 12px;text-align:center;}
+  .balance-stat{flex:1;background:#FCFAF3;border:1px solid var(--bg-deep);border-radius:14px;padding:16px 12px;text-align:center;}
   .balance-stat .bs-num{font-family:var(--font-mono);font-weight:700;font-size:26px;color:var(--ink);}
   .balance-stat .bs-label{font-size:10.5px;color:var(--ink-soft);letter-spacing:1px;text-transform:uppercase;font-family:var(--font-mono);margin-top:2px;}
-
-  .reward-row{display:flex;align-items:center;gap:10px;padding:12px 2px;border-bottom:1px dashed var(--paper-line);}
+ 
+  .reward-row{display:flex;align-items:center;gap:10px;padding:12px 2px;border-bottom:1px dashed var(--bg-deep);}
   .reward-row:last-child{border-bottom:none;}
   .reward-row .rw-name{flex:1;font-size:14.5px;}
   .reward-row .rw-cost{font-family:var(--font-mono);font-size:12.5px;color:var(--gold-deep);font-weight:700;}
-  .reward-row button{background:var(--sage-deep);color:#fff;border:none;border-radius:8px;padding:9px 13px;font-size:12.5px;flex-shrink:0;}
-  .reward-row button:disabled{background:#cfc2a0;color:#7a7263;}
-
+  .reward-row button{background:var(--sage-deep);color:#fff;border:none;border-radius:10px;padding:9px 13px;font-size:12.5px;flex-shrink:0;}
+  .reward-row button:disabled{background:#DDD0AE;color:#8a7c5c;}
+ 
   .payout-box{display:flex;gap:8px;margin-top:4px;}
-  .payout-box input{flex:1;padding:10px;border-radius:8px;border:1px solid var(--paper-line);font-family:var(--font-mono);font-size:14px;}
-  .payout-box button{background:var(--clay);color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:13px;flex-shrink:0;}
-  .payout-box button:disabled{background:#cfc2a0;color:#7a7263;}
-
-  .my-requests .mr-row{display:flex;justify-content:space-between;align-items:center;padding:8px 2px;border-bottom:1px dotted var(--paper-line);font-size:13px;}
+  .payout-box input{flex:1;padding:10px;border-radius:10px;border:1px solid var(--bg-deep);font-family:var(--font-mono);font-size:14px;}
+  .payout-box button{background:var(--clay);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-size:13px;flex-shrink:0;}
+  .payout-box button:disabled{background:#DDD0AE;color:#8a7c5c;}
+ 
+  .my-requests .mr-row{display:flex;justify-content:space-between;align-items:center;padding:8px 2px;border-bottom:1px dotted var(--bg-deep);font-size:13px;}
   .my-requests .mr-row:last-child{border-bottom:none;}
   .badge{font-family:var(--font-mono);font-size:10px;padding:3px 9px;border-radius:20px;letter-spacing:0.5px;flex-shrink:0;}
   .badge.pending{background:#EFE0B8;color:var(--gold-deep);}
-  .badge.approved{background:#D7E3CF;color:var(--sage-deep);}
-  .badge.declined{background:#EFD2C4;color:var(--clay-deep);}
-
-  .req-row{display:flex;align-items:center;gap:10px;padding:12px 2px;border-bottom:1px dashed var(--paper-line);}
+  .badge.approved{background:var(--sage-tint);color:var(--sage-deep);}
+  .badge.declined{background:var(--clay-tint);color:var(--clay-deep);}
+ 
+  .req-row{display:flex;align-items:center;gap:10px;padding:12px 2px;border-bottom:1px dashed var(--bg-deep);}
   .req-row:last-child{border-bottom:none;}
   .req-info{flex:1;}
   .req-info .ri-kid{font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.5px;}
   .req-info .ri-detail{font-size:14.5px;}
   .req-actions{display:flex;gap:6px;flex-shrink:0;}
-  .req-actions button{border:none;border-radius:8px;padding:9px 11px;font-size:12px;}
+  .req-actions button{border:none;border-radius:10px;padding:9px 11px;font-size:12px;}
   .req-approve{background:var(--sage-deep);color:#fff;}
   .req-decline{background:var(--clay);color:#fff;}
-
-  .kid-bank-link{display:block;width:100%;text-align:center;background:var(--bg-soft);border:1px solid rgba(242,233,216,0.25);border-radius:12px;padding:13px;color:var(--cream);font-size:13.5px;margin-bottom:18px;}
-  .kid-bank-link:hover{border-color:var(--gold);color:var(--gold);}
-
+ 
   /* ---------- toast ---------- */
-  .toast{
-    position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);
-    background:var(--bg-soft);color:var(--cream);padding:12px 18px;border-radius:10px;
-    font-size:13.5px;box-shadow:0 8px 20px rgba(0,0,0,0.4);
-    opacity:0;pointer-events:none;transition:opacity 0.25s ease, transform 0.25s ease;
-    z-index:50;max-width:90%;text-align:center;border:1px solid rgba(217,164,65,0.4);
-  }
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-size:13.5px;box-shadow:0 8px 20px rgba(0,0,0,0.25);opacity:0;pointer-events:none;transition:opacity 0.25s ease, transform 0.25s ease;z-index:50;max-width:90%;text-align:center;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-
+ 
   /* ---------- setup ---------- */
-  .setup-intro{text-align:center;margin-bottom:20px;}
-  .setup-intro p{color:var(--muted);font-size:14px;line-height:1.5;margin-top:8px;}
-  .field-label{font-size:11.5px;color:var(--ink-soft);margin-bottom:4px;font-family:var(--font-mono);letter-spacing:0.5px;display:block;}
-  .plain-input{width:100%;padding:10px;border-radius:8px;border:1px solid var(--paper-line);background:#fff;color:var(--ink);font-size:14px;margin:4px 0 12px;}
+  .setup-intro{margin-bottom:20px;}
+  .setup-intro p{color:var(--ink-soft);font-size:14px;line-height:1.5;margin-top:8px;}
+  .field-label{font-size:11.5px;color:var(--ink-soft);margin-bottom:4px;font-family:var(--font-mono);letter-spacing:0.4px;display:block;}
+  .plain-input{width:100%;padding:10px;border-radius:10px;border:1px solid var(--bg-deep);background:#fff;color:var(--ink);font-size:14px;margin:4px 0 12px;}
   .card-note{font-size:13px;color:var(--ink-soft);margin:6px 2px 14px;line-height:1.4;}
-
-  @media (prefers-reduced-motion:reduce){
-    *{animation-duration:0.001ms !important;transition-duration:0.001ms !important;}
-  }
+ 
+  @media (prefers-reduced-motion:reduce){*{animation-duration:0.001ms !important;transition-duration:0.001ms !important;}}
 </style>
 </head>
 <body>
-
+ 
 <div id="toast" class="toast"></div>
-
+ 
 <div id="app">
-
+ 
   <div id="loading-screen">
     <div class="pin-spinner"></div>
     <div id="loading-text">Laai...</div>
   </div>
-
+ 
+  <!-- ============ FAMILY GATE (cloud sync pairing) ============ -->
+  <div id="view-family-gate" class="view hidden">
+    <div class="board-header">
+      <span class="eyebrow">WOLK-SINKRONISASIE</span>
+      <h1>Koppel julle toestelle</h1>
+      <p class="date-sub">Skep 'n gesin-kode op een foon, en voer dieselfde kode op elke ander foon of rekenaar in sodat almal dieselfde data sien.</p>
+    </div>
+    <div id="family-gate-options">
+      <div class="card">
+        <span class="eyebrow">NUUT HIER?</span>
+        <p class="card-note">Skep 'n nuwe gesin-kode op hierdie toestel. Deel dit daarna met die res van julle toestelle.</p>
+        <button class="btn-save-bar" id="btn-create-family">Skep 'n nuwe gesin-kode</button>
+      </div>
+      <div class="card">
+        <span class="eyebrow">HET JULLE ALREEDS 'N KODE?</span>
+        <p class="card-note">Voer die kode in wat op 'n ander toestel geskep is.</p>
+        <input type="text" id="join-family-input" class="plain-input" placeholder="bv. GAB93K" style="text-transform:uppercase;">
+        <button class="btn-save-bar" id="btn-join-family">Sluit aan by gesin</button>
+      </div>
+    </div>
+    <div id="family-code-reveal" class="card hidden" style="text-align:center;">
+      <span class="eyebrow">JULLE GESIN-KODE</span>
+      <div style="font-family:var(--font-mono);font-size:34px;font-weight:700;letter-spacing:4px;color:var(--gold-deep);margin:10px 0;" id="family-code-display"></div>
+      <p class="card-note">Skryf hierdie kode neer en voer dit op elke ander foon/rekenaar in (kies "Sluit aan by gesin" daar).</p>
+      <button class="btn-save-bar" id="btn-continue-with-new-family">Ek het dit gestoor \u2014 gaan voort</button>
+    </div>
+  </div>
+ 
   <!-- ============ SETUP (first run) ============ -->
   <div id="view-setup" class="view hidden">
     <div class="board-header">
@@ -413,7 +326,7 @@
     </div>
     <button class="btn-save-bar" id="setup-save-btn">Stoor en begin</button>
   </div>
-
+ 
   <!-- ============ SECURITY-ONLY SETUP (migration) ============ -->
   <div id="view-security-setup" class="view hidden">
     <div class="board-header">
@@ -436,7 +349,7 @@
     </div>
     <button class="btn-save-bar" id="security-setup-save-btn">Stoor en gaan voort</button>
   </div>
-
+ 
   <!-- ============ PROFILE SELECT ============ -->
   <div id="view-select" class="view hidden">
     <div class="board-header">
@@ -447,7 +360,7 @@
     <div class="profile-grid" id="profile-grid"></div>
     <button class="parent-link" id="btn-open-parent">Ouer-oorsig &rarr;</button>
   </div>
-
+ 
   <!-- ============ PIN ENTRY (kid) ============ -->
   <div id="view-pin-entry" class="view hidden">
     <nav class="topbar">
@@ -461,7 +374,7 @@
       <div class="keypad" id="pin-keypad"></div>
     </div>
   </div>
-
+ 
   <!-- ============ PARENT PASSWORD GATE ============ -->
   <div id="view-parent-auth" class="view hidden">
     <nav class="topbar">
@@ -483,20 +396,58 @@
       </div>
     </div>
   </div>
-
-  <!-- ============ KID VIEW ============ -->
-  <div id="view-kid" class="view hidden">
+ 
+  <!-- ============ KID DASHBOARD (grid home) ============ -->
+  <div id="view-kid-dashboard" class="view hidden">
     <nav class="topbar">
       <button id="btn-back-from-kid">&larr; Terug</button>
       <div class="kid-title" id="kid-title"></div>
     </nav>
-
-    <section class="card affirmation-card" id="affirmation-card">
+ 
+    <div class="affirmation-banner">
       <span class="eyebrow">&#10024; VANDAG SE BEVESTIGING</span>
       <div class="affirmation-text" id="affirmation-text"></div>
       <div class="affirmation-ref" id="affirmation-ref"></div>
-    </section>
-
+    </div>
+ 
+    <div class="grid-2">
+      <button class="dash-card" id="card-open-bank">
+        <span class="dc-icon ic-gold">&#9200;</span>
+        <span>
+          <span class="dc-title">Skermtyd-bank</span>
+          <span class="dc-sub" id="dc-bank-sub">&hellip;</span>
+        </span>
+      </button>
+      <button class="dash-card" id="card-open-tasks">
+        <span class="dc-icon ic-clay">&#9989;</span>
+        <span>
+          <span class="dc-title">Vandag se take</span>
+          <span class="dc-sub" id="dc-tasks-sub">&hellip;</span>
+        </span>
+      </button>
+      <button class="dash-card" id="card-open-bible">
+        <span class="dc-icon ic-sage">&#128214;</span>
+        <span>
+          <span class="dc-title">Bybelstudie</span>
+          <span class="dc-sub" id="dc-bible-sub">&hellip;</span>
+        </span>
+      </button>
+      <button class="dash-card" id="card-open-rewards">
+        <span class="dc-icon ic-sky">&#128176;</span>
+        <span>
+          <span class="dc-title">Sakgeld &amp; Belonings</span>
+          <span class="dc-sub" id="dc-rewards-sub">&hellip;</span>
+        </span>
+      </button>
+    </div>
+  </div>
+ 
+  <!-- ============ KID: SKERMTYD-BANK ============ -->
+  <div id="view-kid-bank" class="view hidden">
+    <nav class="topbar">
+      <button id="btn-back-from-bank">&larr; Terug</button>
+      <div class="kid-title">Skermtyd-bank</div>
+    </nav>
     <section class="card bank-card" id="bank-card">
       <span class="eyebrow">SKERMTYD-BANK</span>
       <div class="bank-readout" id="bank-readout">0 min</div>
@@ -504,9 +455,26 @@
       <button class="btn-primary" id="btn-toggle-timer">Begin Skermtyd</button>
       <div class="session-log" id="session-log"></div>
     </section>
-
-    <button class="kid-bank-link" id="btn-open-rewards">&#128176; Sakgeld &amp; Belonings &rarr;</button>
-
+  </div>
+ 
+  <!-- ============ KID: TAKE ============ -->
+  <div id="view-kid-tasks" class="view hidden">
+    <nav class="topbar">
+      <button id="btn-back-from-tasks-kid">&larr; Terug</button>
+      <div class="kid-title">Vandag se take</div>
+    </nav>
+    <section class="card" id="tasks-card">
+      <span class="eyebrow">VANDAG SE TAKE</span>
+      <div id="task-list"></div>
+    </section>
+  </div>
+ 
+  <!-- ============ KID: BYBELSTUDIE ============ -->
+  <div id="view-kid-bible" class="view hidden">
+    <nav class="topbar">
+      <button id="btn-back-from-bible-kid">&larr; Terug</button>
+      <div class="kid-title">Bybelstudie</div>
+    </nav>
     <section class="card bible-card" id="bible-card">
       <span class="eyebrow">&#128214; BYBELSTUDIE VANDAG</span>
       <div class="bible-ref" id="bible-ref-text"></div>
@@ -522,13 +490,8 @@
       <div class="bible-question" id="bible-question-text"></div>
       <textarea id="bible-answer" placeholder="Skryf hier wat jy geleer het (opsioneel)..."></textarea>
     </section>
-
-    <section class="card" id="tasks-card">
-      <span class="eyebrow">VANDAG SE TAKE</span>
-      <div id="task-list"></div>
-    </section>
   </div>
-
+ 
   <!-- ============ REWARDS / SAKGELD (kid) ============ -->
   <div id="view-rewards" class="view hidden">
     <nav class="topbar">
@@ -563,12 +526,71 @@
       <div class="my-requests" id="my-deductions-list"></div>
     </div>
   </div>
-
-  <!-- ============ PARENT DASHBOARD ============ -->
+ 
+  <!-- ============ PARENT DASHBOARD (grid home) ============ -->
   <div id="view-parent" class="view hidden">
     <nav class="topbar">
       <button id="btn-back-from-parent">&larr; Terug</button>
       <div class="kid-title">Ouer-oorsig</div>
+    </nav>
+    <div class="grid-2">
+      <button class="dash-card wide-card" id="card-open-summary">
+        <span class="dc-icon ic-gold">&#128202;</span>
+        <span>
+          <span class="dc-title">Vandag se oorsig</span>
+          <span class="dc-sub">Take, minute en Bybel-antwoorde per kind</span>
+        </span>
+      </button>
+      <button class="dash-card" id="card-open-requests">
+        <span class="dc-icon ic-clay">&#128172;</span>
+        <span>
+          <span class="dc-title">Versoeke hanteer</span>
+          <span class="dc-sub" id="dc-requests-sub">&hellip;</span>
+        </span>
+      </button>
+      <button class="dash-card" id="card-open-manage-tasks">
+        <span class="dc-icon ic-sage">&#9989;</span>
+        <span>
+          <span class="dc-title">Take bestuur</span>
+          <span class="dc-sub">Wysig take, minute, punte</span>
+        </span>
+      </button>
+      <button class="dash-card" id="card-open-manage-rewards">
+        <span class="dc-icon ic-sky">&#127873;</span>
+        <span>
+          <span class="dc-title">Belonings bestuur</span>
+          <span class="dc-sub">Wysig wat kinders kan verdien</span>
+        </span>
+      </button>
+      <button class="dash-card" id="card-open-manage-bible">
+        <span class="dc-icon ic-gold">&#128214;</span>
+        <span>
+          <span class="dc-title">Bybel vooruit beplan</span>
+          <span class="dc-sub">Stel gedeeltes vir spesifieke dae</span>
+        </span>
+      </button>
+      <button class="dash-card" id="card-open-manage-affirmations">
+        <span class="dc-icon ic-clay">&#10024;</span>
+        <span>
+          <span class="dc-title">Bevestigings beplan</span>
+          <span class="dc-sub">Stel bevestigings vir spesifieke dae</span>
+        </span>
+      </button>
+      <button class="dash-card wide-card" id="card-open-manage-kids">
+        <span class="dc-icon ic-sage">&#128101;</span>
+        <span>
+          <span class="dc-title">Kinders &amp; wagwoorde</span>
+          <span class="dc-sub">Name, ouderdomme, PIN-kodes en ouer-wagwoord</span>
+        </span>
+      </button>
+    </div>
+  </div>
+ 
+  <!-- ============ PARENT: VANDAG SE OORSIG ============ -->
+  <div id="view-parent-summary" class="view hidden">
+    <nav class="topbar">
+      <button id="btn-back-from-summary">&larr; Terug</button>
+      <div class="kid-title">Vandag se oorsig</div>
     </nav>
     <div class="date-nav">
       <button id="date-prev">&lsaquo;</button>
@@ -576,16 +598,8 @@
       <button id="date-next">&rsaquo;</button>
     </div>
     <div id="parent-summary"></div>
-    <div class="parent-actions">
-      <button class="btn-secondary" id="btn-manage-tasks"><span>Take bestuur</span><span>&rarr;</span></button>
-      <button class="btn-secondary" id="btn-requests"><span>Versoeke hanteer</span><span class="badge-count" id="pending-badge">&rarr;</span></button>
-      <button class="btn-secondary" id="btn-manage-rewards"><span>Belonings bestuur</span><span>&rarr;</span></button>
-      <button class="btn-secondary" id="btn-manage-bible"><span>Bybel vooruit beplan</span><span>&rarr;</span></button>
-      <button class="btn-secondary" id="btn-manage-affirmations"><span>Bevestigings vooruit beplan</span><span>&rarr;</span></button>
-      <button class="btn-secondary" id="btn-manage-kids"><span>Kinders &amp; wagwoorde</span><span>&rarr;</span></button>
-    </div>
   </div>
-
+ 
   <!-- ============ REQUESTS (parent) ============ -->
   <div id="view-requests" class="view hidden">
     <nav class="topbar">
@@ -601,7 +615,7 @@
       <div id="resolved-requests-list"></div>
     </div>
   </div>
-
+ 
   <!-- ============ MANAGE REWARDS (parent) ============ -->
   <div id="view-manage-rewards" class="view hidden">
     <nav class="topbar">
@@ -612,7 +626,7 @@
     <button class="btn-add" id="btn-add-reward">+ Voeg nuwe beloning by</button>
     <button class="btn-save-bar" id="btn-save-rewards">Stoor veranderinge</button>
   </div>
-
+ 
   <!-- ============ MANAGE TASKS ============ -->
   <div id="view-manage-tasks" class="view hidden">
     <nav class="topbar">
@@ -623,7 +637,7 @@
     <button class="btn-add" id="btn-add-task">+ Voeg nuwe taak by</button>
     <button class="btn-save-bar" id="btn-save-tasks">Stoor veranderinge</button>
   </div>
-
+ 
   <!-- ============ MANAGE BIBLE ============ -->
   <div id="view-manage-bible" class="view hidden">
     <nav class="topbar">
@@ -637,7 +651,7 @@
         <label class="field-label">SKRIFVERWYSING</label>
         <input type="text" id="bible-ref-input" class="plain-input" placeholder="bv. Psalm 23">
         <label class="field-label">BESPREKINGSVRAAG</label>
-        <textarea id="bible-q-input" style="width:100%;min-height:60px;padding:10px;border-radius:8px;border:1px solid var(--paper-line);margin-top:4px;"></textarea>
+        <textarea id="bible-q-input" style="width:100%;min-height:60px;padding:10px;border-radius:10px;border:1px solid var(--bg-deep);margin-top:4px;"></textarea>
       </div>
       <div style="display:flex;gap:10px;margin-top:14px;">
         <button class="btn-save-bar" id="btn-save-bible-override" style="flex:1;">Stoor hierdie datum</button>
@@ -649,7 +663,7 @@
       <div id="bible-rotation-list"></div>
     </div>
   </div>
-
+ 
   <!-- ============ MANAGE AFFIRMATIONS ============ -->
   <div id="view-manage-affirmations" class="view hidden">
     <nav class="topbar">
@@ -675,7 +689,7 @@
       <div id="affirmation-rotation-list"></div>
     </div>
   </div>
-
+ 
   <!-- ============ DEDUCT (parent consequence) ============ -->
   <div id="view-deduct" class="view hidden">
     <nav class="topbar">
@@ -708,7 +722,7 @@
       <div class="my-requests" id="deduct-history-list"></div>
     </div>
   </div>
-
+ 
   <!-- ============ MANAGE KIDS & PASSWORDS ============ -->
   <div id="view-manage-kids" class="view hidden">
     <nav class="topbar">
@@ -716,6 +730,11 @@
       <div class="kid-title">Kinders &amp; wagwoorde</div>
     </nav>
     <div id="kids-editor-list"></div>
+    <div class="card hidden" id="family-code-card">
+      <span class="eyebrow">WOLK-SINKRONISASIE</span>
+      <p class="card-note">Hierdie toestel is gekoppel aan gesin-kode <strong id="family-code-value" style="font-family:var(--font-mono);"></strong>. Voer dieselfde kode op ander toestelle in sodat almal dieselfde data sien.</p>
+      <button class="ks-reset" id="btn-change-family-code">Koppel los / gebruik 'n ander kode</button>
+    </div>
     <div class="card">
       <span class="eyebrow">OUER-WAGWOORD</span>
       <label class="field-label">NUWE WAGWOORD (los leeg om huidige te behou)</label>
@@ -727,99 +746,53 @@
     </div>
     <button class="btn-save-bar" id="btn-save-kids">Stoor veranderinge</button>
   </div>
-
+ 
 </div>
-
-<script type="module">
+ 
+<script>
 /* =====================================================================
-   FIREBASE STORAGE SHIM
-   Vervang die Claude-artifact se window.storage met 'n Firestore-weergawe
-   wat presies dieselfde get/set/delete/list-koppelvlak bied, sodat die
-   res van die app ongeskonde bly.
-   ===================================================================== */
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-import {
-  getFirestore, doc, getDoc, setDoc, deleteDoc, collection, getDocs
-} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyA8cwucL4RQo_qZsUv_hzJOfpwiBZ3G_tM",
-  authDomain: "gesin-tyd-bank.firebaseapp.com",
-  projectId: "gesin-tyd-bank",
-  storageBucket: "gesin-tyd-bank.firebasestorage.app",
-  messagingSenderId: "895685100105",
-  appId: "1:895685100105:web:64d6f6d41226aa79a73598"
-};
-
-const fbApp = initializeApp(firebaseConfig);
-const db = getFirestore(fbApp);
-const COLLECTION = 'tydbank';
-
-window.storage = {
-  async get(key, shared = true){
-    try{
-      const snap = await getDoc(doc(db, COLLECTION, key));
-      if(!snap.exists()) return null;
-      return { key, value: snap.data().value, shared: !!shared };
-    }catch(e){
-      console.error('storage.get failed', key, e);
-      return null;
-    }
-  },
-  async set(key, value, shared = true){
-    try{
-      await setDoc(doc(db, COLLECTION, key), { value, updatedAt: Date.now() });
-      return { key, value, shared: !!shared };
-    }catch(e){
-      console.error('storage.set failed', key, e);
-      return null;
-    }
-  },
-  async delete(key, shared = true){
-    try{
-      await deleteDoc(doc(db, COLLECTION, key));
-      return { key, deleted:true, shared: !!shared };
-    }catch(e){
-      console.error('storage.delete failed', key, e);
-      return null;
-    }
-  },
-  async list(prefix = '', shared = true){
-    try{
-      const snap = await getDocs(collection(db, COLLECTION));
-      const keys = [];
-      snap.forEach(d => { if(!prefix || d.id.startsWith(prefix)) keys.push(d.id); });
-      return { keys, prefix, shared: !!shared };
-    }catch(e){
-      console.error('storage.list failed', e);
-      return null;
-    }
-  }
-};
-</script>
-
-<script type="module">
-/* =====================================================================
-   ONS GESIN SE TYD-BANK
+   ONS GESIN SE TYD-BANK — los-staande weergawe
    Family task / Bible-study / screen-time / rewards tracker
-   Data scope: all keys shared=true (gestoor in Firebase Firestore,
-   sigbaar vir almal wat hierdie web-app se skakel oopmaak)
+   Data scope: localStorage on THIS device/browser only (no server sync)
    ===================================================================== */
-
+ 
+/* =====================================================================
+   WOLK-SINKRONISASIE (Firebase) — opsioneel
+   Vul hierdie waardes in met jou eie Firebase-projek se konfigurasie
+   (Firebase Console \u2192 Project settings \u2192 General \u2192 "Your apps" \u2192 SDK setup).
+   Los dit onveranderd (met "YOUR_API_KEY") om die app in plaaslike-
+   toestel-modus te gebruik sonder enige Firebase-opstelling.
+   ===================================================================== */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCX-1F6n-wNbSChRrlypj2E4S9PP4iHgpE",
+  authDomain: "famhub-c2134.firebaseapp.com",
+  projectId: "famhub-c2134",
+  storageBucket: "famhub-c2134.firebasestorage.app",
+  messagingSenderId: "785311379625",
+  appId: "1:785311379625:web:f9eb1fb13ad1a79c2c39b8"
+};
+const FIREBASE_CONFIGURED = !!(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY");
+const DEVICE_FAMILY_KEY = 'gtb_device_family_id';
+let cloudActive = false;
+let familyId = null;
+let fsApi = null; // { doc, getDoc, setDoc, onSnapshot }
+let globalUnsubs = [];
+let currentViewId = null;
+ 
 const KID_COLORS = ['var(--gold)', 'var(--sage)', 'var(--clay)'];
-
-const KEY_PROFILES = 'profiles';
-const KEY_TASKS = 'tasks';
-const KEY_BIBLE_OVERRIDES = 'bible-overrides';
-const KEY_PINS = 'pins';
-const KEY_PARENT_AUTH = 'parent-auth';
-const KEY_BALANCES = 'balances';
-const KEY_REWARDS = 'rewards';
-const KEY_REQUESTS = 'requests';
-const KEY_AFFIRMATION_OVERRIDES = 'affirmation-overrides';
-const KEY_DEDUCTIONS = 'deductions';
-const dayKey = (date, kidId) => `day:${date}:${kidId}`;
-
+ 
+const KEY_PROFILES = 'gtb_profiles';
+const KEY_TASKS = 'gtb_tasks';
+const KEY_BIBLE_OVERRIDES = 'gtb_bible-overrides';
+const KEY_PINS = 'gtb_pins';
+const KEY_PARENT_AUTH = 'gtb_parent-auth';
+const KEY_BALANCES = 'gtb_balances';
+const KEY_REWARDS = 'gtb_rewards';
+const KEY_REQUESTS = 'gtb_requests';
+const KEY_AFFIRMATION_OVERRIDES = 'gtb_affirmation-overrides';
+const KEY_DEDUCTIONS = 'gtb_deductions';
+const dayKey = (date, kidId) => `gtb_day:${date}:${kidId}`;
+ 
 const DEFAULT_TASKS = [
   { id:'bybel', name:'Bybelstudie', minutes:15, points:10, rand:2, assignedTo:'all', active:true, isBible:true },
   { id:'huiswerk', name:'Skoolhuiswerk klaar', minutes:30, points:10, rand:3, assignedTo:'all', active:true },
@@ -829,14 +802,14 @@ const DEFAULT_TASKS = [
   { id:'lees', name:'Lees 20 minute (\u2019n boek, nie skerm nie)', minutes:20, points:8, rand:2, assignedTo:'all', active:true },
   { id:'huistaak', name:'Help met \u2019n huistaak (vee, was hond, ens.)', minutes:15, points:8, rand:3, assignedTo:'all', active:true }
 ];
-
+ 
 const DEFAULT_REWARDS = [
   { id:'rwd1', name:'Kies die fliek vir gesin-aand', pointsCost:40, active:true },
   { id:'rwd2', name:'Ekstra 30 minute skermtyd', pointsCost:25, active:true },
   { id:'rwd3', name:'Speel-datum met \u2019n vriend', pointsCost:60, active:true },
   { id:'rwd4', name:'Spesiale nagereg kies', pointsCost:20, active:true }
 ];
-
+ 
 const BIBLE_ROTATION = [
   { ref:'Psalm 23', q:'Wat leer hierdie psalm jou oor hoe God na jou omsien?' },
   { ref:'Spreuke 3:5-6', q:'Wat beteken dit om met jou hele hart op die Here te vertrou?' },
@@ -853,7 +826,7 @@ const BIBLE_ROTATION = [
   { ref:'Kolossense 3:23', q:'Hoe kan jy vandag jou take doen asof dit vir die Here is?' },
   { ref:'Jakobus 1:19', q:'Wanneer was dit vandag moeilik om gou te luister en stadig te praat?' }
 ];
-
+ 
 const AFFIRMATION_ROTATION = [
   { text:'Ek is wonderbaar gemaak deur God.', ref:'Psalm 139:14' },
   { text:'Ek hoef nie bang te wees nie, want God is by my.', ref:'Jesaja 41:10' },
@@ -870,7 +843,7 @@ const AFFIRMATION_ROTATION = [
   { text:'Ek kan vergewe soos God my vergewe het.', ref:'Efesi\u00ebrs 4:32' },
   { text:'Ek is sout en lig in hierdie w\u00eareld.', ref:'Matteus 5:13-14' }
 ];
-
+ 
 /* ---------------- state ---------------- */
 let profiles = null;
 let tasks = null;
@@ -889,7 +862,7 @@ let parentDateStr = null;
 let timerInterval = null;
 let pendingPinKidId = null;
 let pinBuffer = '';
-
+ 
 /* ---------------- date helpers ---------------- */
 function formatDate(d){
   const y = d.getFullYear();
@@ -925,28 +898,124 @@ function formatRand(amount){
   amount = Math.round((amount||0)*100)/100;
   return Number.isInteger(amount) ? `${amount}` : amount.toFixed(2);
 }
-
-/* ---------------- storage helpers ---------------- */
-async function getJSON(key, shared=true){
+ 
+/* ---------------- storage helpers ----------------
+   Cloud mode (Firebase Firestore, when configured & connected): data lives
+   under families/{familyId}/store/{key} and syncs live across every device
+   using the same family code.
+   Fallback (no Firebase configured, or connection failed): plain
+   localStorage on this device only \u2014 same behaviour as before.
+   ---------------------------------------------------- */
+async function getJSON(key){
+  if(cloudActive && fsApi){
+    try{
+      const ref = fsApi.doc(db, 'families', familyId, 'store', key);
+      const snap = await fsApi.getDoc(ref);
+      if(!snap.exists()) return null;
+      const data = snap.data();
+      return (data && data.json !== undefined) ? JSON.parse(data.json) : null;
+    }catch(e){
+      console.error('Cloud read failed', key, e);
+      return null;
+    }
+  }
   try{
-    const res = await window.storage.get(key, shared);
-    if(!res) return null;
-    return JSON.parse(res.value);
+    const v = localStorage.getItem(key);
+    if(v === null) return null;
+    return JSON.parse(v);
   }catch(e){
     return null;
   }
 }
-async function setJSON(key, value, shared=true){
+async function setJSON(key, value){
+  if(cloudActive && fsApi){
+    try{
+      const ref = fsApi.doc(db, 'families', familyId, 'store', key);
+      await fsApi.setDoc(ref, { json: JSON.stringify(value), updatedAt: Date.now() });
+      return true;
+    }catch(e){
+      console.error('Cloud write failed', key, e);
+      showToast('Kon nie na die wolk stoor nie \u2014 gaan na of julle internet werk.');
+      return false;
+    }
+  }
   try{
-    const res = await window.storage.set(key, JSON.stringify(value), shared);
-    return !!res;
+    localStorage.setItem(key, JSON.stringify(value));
+    return true;
   }catch(e){
     console.error('Storage set failed', key, e);
     showToast('Kon nie stoor nie \u2014 probeer asseblief weer.');
     return false;
   }
 }
-
+function subscribeJSON(key, onChange){
+  if(!(cloudActive && fsApi)) return () => {};
+  const ref = fsApi.doc(db, 'families', familyId, 'store', key);
+  return fsApi.onSnapshot(ref, (snap) => {
+    if(!snap.exists()){ onChange(null); return; }
+    const data = snap.data();
+    onChange((data && data.json !== undefined) ? JSON.parse(data.json) : null);
+  }, (err) => console.error('Live update failed', key, err));
+}
+ 
+/* ---------------- Firebase (cloud sync) bootstrap ---------------- */
+let db = null;
+async function initFirebaseCloud(){
+  try{
+    const FB_VER = '10.12.2';
+    const [{ initializeApp }, { getAuth, signInAnonymously }, firestoreMod] = await Promise.all([
+      import(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-app.js`),
+      import(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-auth.js`),
+      import(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-firestore.js`)
+    ]);
+    const app = initializeApp(FIREBASE_CONFIG);
+    const auth = getAuth(app);
+    await signInAnonymously(auth);
+    db = firestoreMod.getFirestore(app);
+    fsApi = { doc: firestoreMod.doc, getDoc: firestoreMod.getDoc, setDoc: firestoreMod.setDoc, onSnapshot: firestoreMod.onSnapshot };
+    return true;
+  }catch(e){
+    console.error('Firebase init failed', e);
+    return false;
+  }
+}
+function generateFamilyCode(){
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for(let i=0;i<6;i++) code += chars[Math.floor(Math.random()*chars.length)];
+  return code;
+}
+function onRemoteDataChanged(){
+  try{
+    if(currentViewId === 'view-select') renderSelectScreen();
+    else if(currentViewId === 'view-kid-dashboard' && currentKidId) renderKidDashboardCards();
+    else if(currentViewId === 'view-kid-tasks' && currentKidId) renderTaskList();
+    else if(currentViewId === 'view-kid-bible' && currentKidId) renderBibleCard();
+    else if(currentViewId === 'view-rewards' && currentKidId) renderRewardsView();
+    else if(currentViewId === 'view-parent') renderParentDashboardCards();
+    else if(currentViewId === 'view-parent-summary') renderParentSummary();
+    else if(currentViewId === 'view-requests') renderRequestsView();
+  }catch(e){ console.error('Re-render after live update failed', e); }
+}
+function setupRealtimeSubscriptions(){
+  if(!(cloudActive && fsApi)) return;
+  globalUnsubs.forEach(u=>{ try{ u(); }catch(e){} });
+  globalUnsubs = [];
+  const bind = (key, applyFn) => {
+    globalUnsubs.push(subscribeJSON(key, (val) => { applyFn(val); onRemoteDataChanged(); }));
+  };
+  bind(KEY_PROFILES, v => { if(v) profiles = v; });
+  bind(KEY_TASKS, v => { if(v) tasks = v; });
+  bind(KEY_BIBLE_OVERRIDES, v => { bibleOverrides = v || {}; });
+  bind(KEY_AFFIRMATION_OVERRIDES, v => { affirmationOverrides = v || {}; });
+  bind(KEY_PINS, v => { if(v) pins = v; });
+  bind(KEY_PARENT_AUTH, v => { if(v) parentAuth = v; });
+  bind(KEY_BALANCES, v => { balances = v || {}; });
+  bind(KEY_REWARDS, v => { if(v) rewards = v; });
+  bind(KEY_REQUESTS, v => { requests = v || []; });
+  bind(KEY_DEDUCTIONS, v => { deductions = v || []; });
+}
+ 
 function emptyDayRecord(){
   return { completed:{}, bibleAnswer:'', minutesUsed:0, sessions:[], activeSessionStart:null };
 }
@@ -955,12 +1024,9 @@ async function loadDayRecord(date, kidId){
   return rec || emptyDayRecord();
 }
 async function saveDayRecord(date, kidId, rec){
-  await saveDayRecordInner(date, kidId, rec);
-}
-async function saveDayRecordInner(date, kidId, rec){
   await setJSON(dayKey(date,kidId), rec);
 }
-
+ 
 /* ---------------- toast ---------------- */
 let toastTimer = null;
 function showToast(msg){
@@ -970,15 +1036,16 @@ function showToast(msg){
   clearTimeout(toastTimer);
   toastTimer = setTimeout(()=>el.classList.remove('show'), 2600);
 }
-
+ 
 /* ---------------- view switching ---------------- */
 function showView(id){
   document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
   document.getElementById('loading-screen').classList.add('hidden');
   document.getElementById(id).classList.remove('hidden');
+  currentViewId = id;
   window.scrollTo(0,0);
 }
-
+ 
 /* ---------------- balances ---------------- */
 function ensureBalanceEntry(kidId){
   if(!balances[kidId]) balances[kidId] = { points:0, rand:0 };
@@ -992,18 +1059,10 @@ function adjustBalance(task, isNowDone){
   bal.rand = Math.max(0, Math.round((bal.rand + sign*(task.rand||0))*100)/100);
   setJSON(KEY_BALANCES, balances);
 }
-function updatePendingBadge(){
-  const pendingCount = requests.filter(q=>q.status==='pending').length;
-  const badgeEl = document.getElementById('pending-badge');
-  if(badgeEl) badgeEl.textContent = pendingCount > 0 ? `${pendingCount} wag` : '\u2192';
+function pendingCount(){
+  return requests.filter(q=>q.status==='pending').length;
 }
-function updateRewardsLinkLabel(){
-  ensureBalanceEntry(currentKidId);
-  const bal = balances[currentKidId];
-  const btn = document.getElementById('btn-open-rewards');
-  if(btn) btn.innerHTML = `&#128176; Sakgeld &amp; Belonings &mdash; ${bal.points} pt &middot; R${formatRand(bal.rand)} &rarr;`;
-}
-
+ 
 /* ---------------- task helpers ---------------- */
 function tasksForKid(kidId){
   return tasks.filter(t => t.active && (t.assignedTo === 'all' || t.assignedTo === kidId));
@@ -1030,11 +1089,37 @@ function rewardLineHtml(t){
   if(t.rand) parts.push(`R${formatRand(t.rand)}`);
   return parts.join(' &middot; ');
 }
-
+ 
 /* ===================================================================
    INIT
    =================================================================== */
 async function init(){
+  document.getElementById('loading-text').textContent = 'Laai julle data...';
+  if(FIREBASE_CONFIGURED){
+    document.getElementById('loading-text').textContent = 'Verbind met die wolk...';
+    cloudActive = await initFirebaseCloud();
+    if(!cloudActive){
+      showToast('Kon nie met die wolk verbind nie \u2014 gaan voort sonder sinkronisasie.');
+    }
+  }
+  if(cloudActive){
+    familyId = localStorage.getItem(DEVICE_FAMILY_KEY);
+    if(!familyId){
+      showView('view-family-gate');
+      return;
+    }
+  }
+  await loadAppData();
+}
+ 
+async function finishAndShowSelect(){
+  parentDateStr = todayStr();
+  renderSelectScreen();
+  showView('view-select');
+  if(cloudActive) setupRealtimeSubscriptions();
+}
+ 
+async function loadAppData(){
   document.getElementById('loading-text').textContent = 'Laai julle data...';
   profiles = await getJSON(KEY_PROFILES);
   if(!profiles || !profiles.setupDone){
@@ -1053,7 +1138,7 @@ async function init(){
   if(!affirmationOverrides) affirmationOverrides = {};
   deductions = await getJSON(KEY_DEDUCTIONS);
   if(!deductions) deductions = [];
-
+ 
   pins = await getJSON(KEY_PINS);
   parentAuth = await getJSON(KEY_PARENT_AUTH);
   balances = await getJSON(KEY_BALANCES);
@@ -1065,18 +1150,38 @@ async function init(){
   }
   requests = await getJSON(KEY_REQUESTS);
   if(!requests) requests = [];
-
+ 
   if(!pins || !parentAuth){
     renderSecuritySetup();
     showView('view-security-setup');
     return;
   }
-
-  parentDateStr = todayStr();
-  renderSelectScreen();
-  showView('view-select');
+ 
+  await finishAndShowSelect();
 }
-
+ 
+/* ---------------- family gate handlers ---------------- */
+document.getElementById('btn-create-family').onclick = () => {
+  const code = generateFamilyCode();
+  document.getElementById('family-code-display').textContent = code;
+  document.getElementById('family-gate-options').classList.add('hidden');
+  document.getElementById('family-code-reveal').classList.remove('hidden');
+  document.getElementById('family-code-reveal').dataset.code = code;
+};
+document.getElementById('btn-continue-with-new-family').onclick = async () => {
+  const code = document.getElementById('family-code-reveal').dataset.code;
+  familyId = code;
+  localStorage.setItem(DEVICE_FAMILY_KEY, code);
+  await loadAppData();
+};
+document.getElementById('btn-join-family').onclick = async () => {
+  const raw = document.getElementById('join-family-input').value.trim().toUpperCase();
+  if(!raw){ showToast('Voer asseblief \u2019n gesin-kode in.'); return; }
+  familyId = raw;
+  localStorage.setItem(DEVICE_FAMILY_KEY, raw);
+  await loadAppData();
+};
+ 
 /* ===================================================================
    SETUP VIEW (fresh install)
    =================================================================== */
@@ -1103,7 +1208,7 @@ function renderSetup(){
       </div>
     </div>
   `).join('');
-
+ 
   document.getElementById('setup-save-btn').onclick = async () => {
     const kids = [];
     const newPins = {};
@@ -1128,7 +1233,7 @@ function renderSetup(){
     const sa = document.getElementById('setup-parent-sa').value.trim();
     if(pw.length < 4){ showToast('Die ouer-wagwoord moet ten minste 4 karakters wees.'); return; }
     if(!sq || !sa){ showToast('Vul asseblief \u2019n sekuriteitsvraag en antwoord in.'); return; }
-
+ 
     profiles = { kids, setupDone:true };
     tasks = JSON.parse(JSON.stringify(DEFAULT_TASKS));
     bibleOverrides = {};
@@ -1139,7 +1244,7 @@ function renderSetup(){
     rewards = JSON.parse(JSON.stringify(DEFAULT_REWARDS));
     requests = [];
     deductions = [];
-
+ 
     await Promise.all([
       setJSON(KEY_PROFILES, profiles),
       setJSON(KEY_TASKS, tasks),
@@ -1152,14 +1257,12 @@ function renderSetup(){
       setJSON(KEY_REQUESTS, requests),
       setJSON(KEY_DEDUCTIONS, deductions)
     ]);
-
-    parentDateStr = todayStr();
-    renderSelectScreen();
-    showView('view-select');
+ 
+    await finishAndShowSelect();
     showToast('Alles is reg \u2014 welkom!');
   };
 }
-
+ 
 /* ===================================================================
    SECURITY-ONLY SETUP (migration for existing families)
    =================================================================== */
@@ -1171,7 +1274,7 @@ function renderSecuritySetup(){
       <input type="text" id="secsetup-pin-${i}" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="bv. 1234">
     </div>
   `).join('');
-
+ 
   document.getElementById('security-setup-save-btn').onclick = async () => {
     const newPins = {};
     for(let i=0;i<profiles.kids.length;i++){
@@ -1187,13 +1290,13 @@ function renderSecuritySetup(){
     const sa = document.getElementById('secsetup-parent-sa').value.trim();
     if(pw.length < 4){ showToast('Die ouer-wagwoord moet ten minste 4 karakters wees.'); return; }
     if(!sq || !sa){ showToast('Vul asseblief \u2019n sekuriteitsvraag en antwoord in.'); return; }
-
+ 
     pins = newPins;
     parentAuth = { password:pw, question:sq, answer:sa };
     if(!balances) balances = {};
     if(!rewards) rewards = JSON.parse(JSON.stringify(DEFAULT_REWARDS));
     if(!requests) requests = [];
-
+ 
     await Promise.all([
       setJSON(KEY_PINS, pins),
       setJSON(KEY_PARENT_AUTH, parentAuth),
@@ -1201,14 +1304,12 @@ function renderSecuritySetup(){
       setJSON(KEY_REWARDS, rewards),
       setJSON(KEY_REQUESTS, requests)
     ]);
-
-    parentDateStr = todayStr();
-    renderSelectScreen();
-    showView('view-select');
+ 
+    await finishAndShowSelect();
     showToast('Beveiliging is gestoor!');
   };
 }
-
+ 
 /* ===================================================================
    PROFILE SELECT VIEW
    =================================================================== */
@@ -1225,11 +1326,11 @@ async function renderSelectScreen(){
       <span class="pc-balance" id="pc-balance-${k.id}">&hellip;</span>
     </button>
   `).join('');
-
+ 
   grid.querySelectorAll('.profile-card').forEach(btn=>{
     btn.addEventListener('click', ()=> requestPin(btn.dataset.kid));
   });
-
+ 
   for(const k of profiles.kids){
     loadDayRecord(todayStr(), k.id).then(rec=>{
       const earned = recomputeEarned(k.id, rec.completed);
@@ -1247,7 +1348,7 @@ document.getElementById('btn-open-parent').onclick = () => {
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-
+ 
 /* ===================================================================
    PIN ENTRY (kid)
    =================================================================== */
@@ -1309,7 +1410,7 @@ document.getElementById('btn-back-from-pin').onclick = () => {
   renderSelectScreen();
   showView('view-select');
 };
-
+ 
 /* ===================================================================
    PARENT PASSWORD GATE
    =================================================================== */
@@ -1342,37 +1443,77 @@ document.getElementById('btn-back-from-parent-auth').onclick = () => {
   renderSelectScreen();
   showView('view-select');
 };
-
+ 
 /* ===================================================================
-   KID VIEW
+   KID DASHBOARD
    =================================================================== */
 async function openKidView(kidId){
   currentKidId = kidId;
   const kid = profiles.kids.find(k=>k.id===kidId);
   document.getElementById('kid-title').textContent = `${kid.name} (${kid.age})`;
-  showView('view-kid');
-  document.getElementById('bank-readout').textContent = '\u2026';
-  document.getElementById('task-list').innerHTML = '<p style="color:var(--ink-soft);font-size:13px;">Laai take...</p>';
-
   ensureBalanceEntry(kidId);
   currentDayRecord = await loadDayRecord(todayStr(), kidId);
-  renderAffirmationCard();
-  renderBibleCard();
-  renderTaskList();
-  renderBankCard();
-  updateRewardsLinkLabel();
-
-  if(currentDayRecord.activeSessionStart){
-    startTickInterval();
-  }
+  renderAffirmationBanner();
+  renderKidDashboardCards();
+  showView('view-kid-dashboard');
 }
-
-function renderAffirmationCard(){
+ 
+function renderAffirmationBanner(){
   const a = effectiveAffirmation(todayStr());
   document.getElementById('affirmation-text').textContent = `\u201c${a.text}\u201d`;
   document.getElementById('affirmation-ref').textContent = a.ref;
 }
-
+ 
+function renderKidDashboardCards(){
+  const earned = currentEarnedMinutes();
+  const available = Math.max(0, earned - currentDayRecord.minutesUsed);
+  document.getElementById('dc-bank-sub').textContent = currentDayRecord.activeSessionStart
+    ? 'Tans aan die loop'
+    : `${available} min beskikbaar`;
+ 
+  const list = tasksForKid(currentKidId).filter(t => !t.isBible);
+  const doneCount = list.filter(t=>currentDayRecord.completed[t.id]).length;
+  document.getElementById('dc-tasks-sub').textContent = `${doneCount}/${list.length} klaar`;
+ 
+  const bTask = getBibleTask();
+  const bibleDone = !!(bTask && currentDayRecord.completed[bTask.id]);
+  document.getElementById('dc-bible-sub').textContent = bibleDone ? 'Klaar gedoen vandag \u2713' : effectiveBibleEntry(todayStr()).ref;
+ 
+  ensureBalanceEntry(currentKidId);
+  const bal = balances[currentKidId];
+  document.getElementById('dc-rewards-sub').textContent = `${bal.points} pt \u00b7 R${formatRand(bal.rand)}`;
+}
+ 
+document.getElementById('card-open-bank').onclick = () => {
+  renderBankCard();
+  showView('view-kid-bank');
+  if(currentDayRecord.activeSessionStart) startTickInterval();
+};
+document.getElementById('btn-back-from-bank').onclick = () => {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  renderKidDashboardCards();
+  showView('view-kid-dashboard');
+};
+ 
+document.getElementById('card-open-tasks').onclick = () => {
+  renderTaskList();
+  showView('view-kid-tasks');
+};
+document.getElementById('btn-back-from-tasks-kid').onclick = () => {
+  renderKidDashboardCards();
+  showView('view-kid-dashboard');
+};
+ 
+document.getElementById('card-open-bible').onclick = () => {
+  renderBibleCard();
+  showView('view-kid-bible');
+};
+document.getElementById('btn-back-from-bible-kid').onclick = () => {
+  renderKidDashboardCards();
+  showView('view-kid-dashboard');
+};
+ 
 function renderBibleCard(){
   const entry = effectiveBibleEntry(todayStr());
   const bTask = getBibleTask();
@@ -1386,7 +1527,7 @@ function renderBibleCard(){
   checkbox.checked = isDone;
   row.classList.toggle('done', isDone);
   document.getElementById('bible-answer').value = currentDayRecord.bibleAnswer || '';
-
+ 
   const toggleBible = () => {
     if(!bTask) return;
     const newVal = !currentDayRecord.completed[bTask.id];
@@ -1396,26 +1537,24 @@ function renderBibleCard(){
     if(newVal) triggerStamp(document.getElementById('bible-stamp'));
     adjustBalance(bTask, newVal);
     saveDayRecord(todayStr(), currentKidId, currentDayRecord);
-    renderBankCard();
-    updateRewardsLinkLabel();
   };
-  checkbox.addEventListener('click', (e)=>{ e.stopPropagation(); toggleBible(); });
-  row.addEventListener('click', (e)=>{
+  checkbox.onclick = (e)=>{ e.stopPropagation(); toggleBible(); };
+  row.onclick = (e)=>{
     if(e.target.tagName.toLowerCase() === 'input') return;
     toggleBible();
-  });
+  };
   document.getElementById('bible-answer').onblur = (e) => {
     currentDayRecord.bibleAnswer = e.target.value;
     saveDayRecord(todayStr(), currentKidId, currentDayRecord);
   };
 }
-
+ 
 function triggerStamp(el){
   el.classList.remove('show');
   void el.offsetWidth;
   el.classList.add('show');
 }
-
+ 
 function renderTaskList(){
   const list = tasksForKid(currentKidId).filter(t => !t.isBible);
   const container = document.getElementById('task-list');
@@ -1437,7 +1576,7 @@ function renderTaskList(){
       </div>
     `;
   }).join('');
-
+ 
   container.querySelectorAll('.ledger-row').forEach(row=>{
     const id = row.dataset.task;
     const task = list.find(x=>x.id===id);
@@ -1450,8 +1589,6 @@ function renderTaskList(){
       if(newVal) triggerStamp(row.querySelector('.stamp'));
       adjustBalance(task, newVal);
       saveDayRecord(todayStr(), currentKidId, currentDayRecord);
-      renderBankCard();
-      updateRewardsLinkLabel();
     };
     checkbox.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
     row.addEventListener('click', (e)=>{
@@ -1460,20 +1597,20 @@ function renderTaskList(){
     });
   });
 }
-
+ 
 function currentEarnedMinutes(){
   return recomputeEarned(currentKidId, currentDayRecord.completed);
 }
 function currentAvailableMinutes(){
   return Math.max(0, currentEarnedMinutes() - currentDayRecord.minutesUsed);
 }
-
+ 
 function renderBankCard(){
   const readout = document.getElementById('bank-readout');
   const sub = document.getElementById('bank-sub');
   const btn = document.getElementById('btn-toggle-timer');
   const available = currentAvailableMinutes();
-
+ 
   if(currentDayRecord.activeSessionStart){
     readout.classList.add('running');
     sub.textContent = 'tans aan die loop \u2014 tik om te stop';
@@ -1491,7 +1628,7 @@ function renderBankCard(){
   renderSessionLog();
   btn.onclick = onToggleTimer;
 }
-
+ 
 function renderSessionLog(){
   const log = document.getElementById('session-log');
   const sessions = currentDayRecord.sessions || [];
@@ -1506,7 +1643,7 @@ function renderSessionLog(){
     return `<div class="s-row"><span>${hh}:${mm}</span><span>${s.minutes} min</span></div>`;
   }).join('');
 }
-
+ 
 function onToggleTimer(){
   if(currentDayRecord.activeSessionStart){
     stopSession(false);
@@ -1521,13 +1658,13 @@ function onToggleTimer(){
     renderBankCard();
   }
 }
-
+ 
 function startTickInterval(){
   clearInterval(timerInterval);
   tick();
   timerInterval = setInterval(tick, 1000);
 }
-
+ 
 function tick(){
   if(!currentDayRecord.activeSessionStart){
     clearInterval(timerInterval);
@@ -1538,14 +1675,14 @@ function tick(){
   const totalAllowedSec = Math.max(0, (earned - currentDayRecord.minutesUsed) * 60);
   const remainingSec = totalAllowedSec - elapsedSec;
   const readout = document.getElementById('bank-readout');
-  if(!readout) { clearInterval(timerInterval); return; }
+  if(!readout || document.getElementById('view-kid-bank').classList.contains('hidden')) { return; }
   if(remainingSec <= 0){
     stopSession(true);
     return;
   }
   readout.textContent = formatMMSS(remainingSec);
 }
-
+ 
 function stopSession(autoStopped){
   clearInterval(timerInterval);
   timerInterval = null;
@@ -1559,35 +1696,37 @@ function stopSession(autoStopped){
   currentDayRecord.activeSessionStart = null;
   saveDayRecord(todayStr(), currentKidId, currentDayRecord);
   renderBankCard();
+  renderKidDashboardCards();
   if(autoStopped) showToast('Skermtyd is op vir vandag \u2014 mooi werk!');
 }
-
+ 
 document.getElementById('btn-back-from-kid').onclick = () => {
   clearInterval(timerInterval);
   timerInterval = null;
   renderSelectScreen();
   showView('view-select');
 };
-
+ 
 /* ===================================================================
    REWARDS / SAKGELD (kid)
    =================================================================== */
-document.getElementById('btn-open-rewards').onclick = () => {
+document.getElementById('card-open-rewards').onclick = () => {
   const kid = profiles.kids.find(k=>k.id===currentKidId);
   document.getElementById('rewards-kid-title').textContent = kid ? kid.name : '';
   renderRewardsView();
   showView('view-rewards');
 };
 document.getElementById('btn-back-from-rewards').onclick = () => {
-  showView('view-kid');
+  renderKidDashboardCards();
+  showView('view-kid-dashboard');
 };
-
+ 
 function renderRewardsView(){
   ensureBalanceEntry(currentKidId);
   const bal = balances[currentKidId];
   document.getElementById('rewards-points-num').textContent = bal.points;
   document.getElementById('rewards-rand-num').textContent = `R${formatRand(bal.rand)}`;
-
+ 
   const activeRewards = rewards.filter(r=>r.active);
   const list = document.getElementById('rewards-list');
   if(activeRewards.length === 0){
@@ -1617,16 +1756,16 @@ function renderRewardsView(){
       });
     });
   }
-
+ 
   const hasPendingPayout = requests.some(q=>q.kidId===currentKidId && q.type==='payout' && q.status==='pending');
   const payoutBtn = document.getElementById('btn-request-payout');
   payoutBtn.disabled = bal.rand <= 0 || hasPendingPayout;
   payoutBtn.textContent = hasPendingPayout ? 'Wag...' : 'Vra';
-
+ 
   renderMyRequests();
   renderMyDeductions();
 }
-
+ 
 document.getElementById('btn-request-payout').onclick = async () => {
   const input = document.getElementById('payout-amount-input');
   const amount = Math.round((parseFloat(input.value) || 0) * 100) / 100;
@@ -1645,7 +1784,7 @@ document.getElementById('btn-request-payout').onclick = async () => {
   showToast('Versoek vir sakgeld is gestuur!');
   renderRewardsView();
 };
-
+ 
 function renderMyRequests(){
   const list = document.getElementById('my-requests-list');
   const mine = requests.filter(q=>q.kidId===currentKidId).sort((a,b)=>b.createdAt-a.createdAt).slice(0,8);
@@ -1674,19 +1813,32 @@ function renderMyDeductions(){
     return `<div class="mr-row"><span>${escapeHtml(d.reason || 'Geen rede gegee')}</span><span style="font-family:var(--font-mono);font-size:11.5px;color:var(--clay-deep);">${parts.join(' &middot; ')}</span></div>`;
   }).join('');
 }
-
+ 
 /* ===================================================================
    PARENT DASHBOARD
    =================================================================== */
 function openParentView(){
-  parentDateStr = todayStr();
-  document.getElementById('date-picker').value = parentDateStr;
-  renderParentSummary();
+  renderParentDashboardCards();
   showView('view-parent');
+}
+function renderParentDashboardCards(){
+  const p = pendingCount();
+  document.getElementById('dc-requests-sub').textContent = p > 0 ? `${p} wag vir goedkeuring` : 'Niks wag nie';
 }
 document.getElementById('btn-back-from-parent').onclick = () => {
   renderSelectScreen();
   showView('view-select');
+};
+ 
+document.getElementById('card-open-summary').onclick = () => {
+  parentDateStr = todayStr();
+  document.getElementById('date-picker').value = parentDateStr;
+  renderParentSummary();
+  showView('view-parent-summary');
+};
+document.getElementById('btn-back-from-summary').onclick = () => {
+  renderParentDashboardCards();
+  showView('view-parent');
 };
 document.getElementById('date-picker').onchange = (e) => {
   parentDateStr = e.target.value;
@@ -1702,13 +1854,11 @@ document.getElementById('date-next').onclick = () => {
   document.getElementById('date-picker').value = parentDateStr;
   renderParentSummary();
 };
-
+ 
 async function renderParentSummary(){
   const container = document.getElementById('parent-summary');
   container.innerHTML = `<p style="color:var(--muted);font-size:13px;">Laai ${prettyDate(parentDateStr)}...</p>`;
-
-  updatePendingBadge();
-
+ 
   const blocks = [];
   for(let i=0;i<profiles.kids.length;i++){
     const kid = profiles.kids[i];
@@ -1720,7 +1870,7 @@ async function renderParentSummary(){
     ensureBalanceEntry(kid.id);
     const bal = balances[kid.id];
     const kidPendingCount = requests.filter(q=>q.kidId===kid.id && q.status==='pending').length;
-
+ 
     const rows = list.map(t=>{
       const isDone = !!rec.completed[t.id];
       const label = t.isBible ? `${t.name} (${effectiveBibleEntry(parentDateStr).ref})` : t.name;
@@ -1731,10 +1881,10 @@ async function renderParentSummary(){
           <span style="font-family:var(--font-mono);font-size:12px;color:var(--ink-soft);">${isDone? '+'+t.minutes+'m' : '\u2014'}</span>
         </div>`;
     }).join('');
-
+ 
     const bibleAnswerBlock = rec.bibleAnswer ? `<div class="ks-bible-answer">\u201c${escapeHtml(rec.bibleAnswer)}\u201d</div>` : '';
     const liveTag = rec.activeSessionStart ? `<span class="ks-live">\u25cf besig met skermtyd</span>` : '';
-
+ 
     blocks.push(`
       <div class="card kid-summary">
         <div class="kid-summary-head">
@@ -1755,7 +1905,7 @@ async function renderParentSummary(){
     `);
   }
   container.innerHTML = blocks.join('');
-
+ 
   container.querySelectorAll('[data-deduct-kid]').forEach(btn=>{
     btn.addEventListener('click', () => openDeductView(btn.dataset.deductKid));
   });
@@ -1771,20 +1921,20 @@ async function renderParentSummary(){
     });
   });
 }
-
-document.getElementById('btn-manage-tasks').onclick = () => { renderManageTasks(); showView('view-manage-tasks'); };
-document.getElementById('btn-manage-bible').onclick = () => { renderManageBible(); showView('view-manage-bible'); };
-document.getElementById('btn-manage-affirmations').onclick = () => { renderManageAffirmations(); showView('view-manage-affirmations'); };
-document.getElementById('btn-manage-kids').onclick = () => { renderManageKids(); showView('view-manage-kids'); };
-document.getElementById('btn-requests').onclick = () => { renderRequestsView(); showView('view-requests'); };
-document.getElementById('btn-manage-rewards').onclick = () => { renderManageRewards(); showView('view-manage-rewards'); };
+ 
+document.getElementById('card-open-manage-tasks').onclick = () => { renderManageTasks(); showView('view-manage-tasks'); };
+document.getElementById('card-open-manage-bible').onclick = () => { renderManageBible(); showView('view-manage-bible'); };
+document.getElementById('card-open-manage-affirmations').onclick = () => { renderManageAffirmations(); showView('view-manage-affirmations'); };
+document.getElementById('card-open-manage-kids').onclick = () => { renderManageKids(); showView('view-manage-kids'); };
+document.getElementById('card-open-requests').onclick = () => { renderRequestsView(); showView('view-requests'); };
+document.getElementById('card-open-manage-rewards').onclick = () => { renderManageRewards(); showView('view-manage-rewards'); };
 document.getElementById('btn-back-from-tasks').onclick = () => { showView('view-parent'); };
 document.getElementById('btn-back-from-bible').onclick = () => { showView('view-parent'); };
 document.getElementById('btn-back-from-affirmations').onclick = () => { showView('view-parent'); };
 document.getElementById('btn-back-from-kids').onclick = () => { showView('view-parent'); };
-document.getElementById('btn-back-from-requests').onclick = () => { showView('view-parent'); };
+document.getElementById('btn-back-from-requests').onclick = () => { renderParentDashboardCards(); showView('view-parent'); };
 document.getElementById('btn-back-from-rewards-manage').onclick = () => { showView('view-parent'); };
-
+ 
 /* ===================================================================
    REQUESTS (parent: approve / decline)
    =================================================================== */
@@ -1812,7 +1962,7 @@ function renderRequestsView(){
       btn.addEventListener('click', ()=>resolveRequest(btn.dataset.decline, 'declined'));
     });
   }
-
+ 
   const resolvedList = requests.filter(q=>q.status!=='pending').sort((a,b)=>b.createdAt-a.createdAt).slice(0,10);
   const resolvedContainer = document.getElementById('resolved-requests-list');
   if(resolvedList.length === 0){
@@ -1826,7 +1976,7 @@ function renderRequestsView(){
     }).join('');
   }
 }
-
+ 
 async function resolveRequest(id, newStatus){
   const q = requests.find(x=>x.id===id);
   if(!q) return;
@@ -1843,10 +1993,10 @@ async function resolveRequest(id, newStatus){
   }
   await setJSON(KEY_REQUESTS, requests);
   renderRequestsView();
-  updatePendingBadge();
+  renderParentDashboardCards();
   showToast(newStatus === 'approved' ? 'Goedgekeur!' : 'Versoek afgekeur.');
 }
-
+ 
 /* ===================================================================
    MANAGE REWARDS
    =================================================================== */
@@ -1901,7 +2051,7 @@ document.getElementById('btn-save-rewards').onclick = async () => {
   await setJSON(KEY_REWARDS, rewards);
   showToast('Belonings is gestoor.');
 };
-
+ 
 /* ===================================================================
    MANAGE TASKS
    =================================================================== */
@@ -1941,7 +2091,7 @@ function renderManageTasks(){
       </div>
     </div>
   `).join('');
-
+ 
   container.querySelectorAll('[data-delete]').forEach(btn=>{
     btn.addEventListener('click', () => {
       btn.closest('.editor-row').remove();
@@ -1999,7 +2149,7 @@ document.getElementById('btn-save-tasks').onclick = async () => {
   await setJSON(KEY_TASKS, tasks);
   showToast('Take is gestoor.');
 };
-
+ 
 /* ===================================================================
    MANAGE BIBLE
    =================================================================== */
@@ -2045,7 +2195,7 @@ function renderBibleRotationPreview(){
   }
   list.innerHTML = html;
 }
-
+ 
 /* ===================================================================
    MANAGE AFFIRMATIONS
    =================================================================== */
@@ -2091,7 +2241,7 @@ function renderAffirmationRotationPreview(){
   }
   list.innerHTML = html;
 }
-
+ 
 /* ===================================================================
    DEDUCT (parent consequence)
    =================================================================== */
@@ -2155,9 +2305,9 @@ document.getElementById('btn-confirm-deduct').onclick = async () => {
   renderParentSummary();
 };
 document.getElementById('btn-back-from-deduct').onclick = () => {
-  showView('view-parent');
+  showView('view-parent-summary');
 };
-
+ 
 /* ===================================================================
    MANAGE KIDS & PASSWORDS
    =================================================================== */
@@ -2182,7 +2332,21 @@ function renderManageKids(){
   document.getElementById('parent-pw-new').value = '';
   document.getElementById('parent-sq').value = parentAuth.question || '';
   document.getElementById('parent-sa').value = parentAuth.answer || '';
+ 
+  const familyCard = document.getElementById('family-code-card');
+  if(cloudActive && familyId){
+    familyCard.classList.remove('hidden');
+    document.getElementById('family-code-value').textContent = familyId;
+  } else {
+    familyCard.classList.add('hidden');
+  }
 }
+document.getElementById('btn-change-family-code').onclick = () => {
+  if(confirm('Is jy seker? Hierdie toestel sal ontkoppel van die huidige gesin-kode en jy sal \u2019n nuwe of bestaande kode moet invoer.')){
+    localStorage.removeItem(DEVICE_FAMILY_KEY);
+    location.reload();
+  }
+};
 document.getElementById('btn-save-kids').onclick = async () => {
   const rows = document.querySelectorAll('#kids-editor-list .editor-row');
   let pinError = false;
@@ -2210,7 +2374,7 @@ document.getElementById('btn-save-kids').onclick = async () => {
   }
   if(sq) parentAuth.question = sq;
   if(sa) parentAuth.answer = sa;
-
+ 
   await Promise.all([
     setJSON(KEY_PROFILES, profiles),
     setJSON(KEY_PINS, pins),
@@ -2218,7 +2382,7 @@ document.getElementById('btn-save-kids').onclick = async () => {
   ]);
   if(!pinError) showToast('Kinders en wagwoorde is gestoor.');
 };
-
+ 
 /* ===================================================================
    GO
    =================================================================== */
