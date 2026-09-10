@@ -1091,17 +1091,23 @@ function subscribeJSON(key, onChange){
 
 /* ---------------- Firebase (cloud sync) bootstrap ---------------- */
 let db = null;
+function withTimeout(promise, ms, label){
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error(`${label || 'operation'} timed out after ${ms}ms`)), ms))
+  ]);
+}
 async function initFirebaseCloud(){
   try{
     const FB_VER = '10.12.2';
-    const [{ initializeApp }, { getAuth, signInAnonymously }, firestoreMod] = await Promise.all([
+    const [{ initializeApp }, { getAuth, signInAnonymously }, firestoreMod] = await withTimeout(Promise.all([
       import(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-app.js`),
       import(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-auth.js`),
       import(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-firestore.js`)
-    ]);
+    ]), 8000, 'Firebase SDK load');
     const app = initializeApp(FIREBASE_CONFIG);
     const auth = getAuth(app);
-    await signInAnonymously(auth);
+    await withTimeout(signInAnonymously(auth), 8000, 'Anonymous sign-in');
     db = firestoreMod.getFirestore(app);
     fsApi = { doc: firestoreMod.doc, getDoc: firestoreMod.getDoc, setDoc: firestoreMod.setDoc, onSnapshot: firestoreMod.onSnapshot };
     return true;
