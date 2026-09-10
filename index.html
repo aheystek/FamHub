@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Ons Gesin se Tyd-bank</title>
+<title>FamHub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Figtree:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -305,7 +305,7 @@
   <div id="view-setup" class="view hidden">
     <div class="board-header">
       <span class="eyebrow">EERSTE OPSTELLING</span>
-      <h1>Welkom by die Tyd-bank</h1>
+      <h1>Welkom by FamHub</h1>
     </div>
     <div class="card">
       <div class="setup-intro">
@@ -353,12 +353,13 @@
   <!-- ============ PROFILE SELECT ============ -->
   <div id="view-select" class="view hidden">
     <div class="board-header">
-      <span class="eyebrow">FAMILIE TYD-BANK</span>
+      <span class="eyebrow">FAMHUB</span>
       <h1>Wie is jy vandag?</h1>
       <p class="date-sub" id="today-date-label"></p>
     </div>
     <div class="profile-grid" id="profile-grid"></div>
     <button class="parent-link" id="btn-open-parent">Ouer-oorsig &rarr;</button>
+    <button class="parent-link" id="btn-open-family-hub" style="margin-top:10px;">Vir die hele gesin &rarr;</button>
   </div>
 
   <!-- ============ PIN ENTRY (kid) ============ -->
@@ -524,6 +525,123 @@
     <div class="card">
       <span class="eyebrow">ONLANGSE AANPASSINGS</span>
       <div class="my-requests" id="my-deductions-list"></div>
+    </div>
+  </div>
+
+  <!-- ============ FAMILY HUB (grid home for shared family features) ============ -->
+  <div id="view-family-hub" class="view hidden">
+    <nav class="topbar">
+      <button id="btn-back-from-family-hub">&larr; Terug</button>
+      <div class="kid-title">Vir die hele gesin</div>
+    </nav>
+    <div class="grid-2">
+      <button class="dash-card" id="card-open-calendar">
+        <span class="dc-icon ic-sky">&#128197;</span>
+        <span>
+          <span class="dc-title">Kalender</span>
+          <span class="dc-sub" id="dc-calendar-sub">&hellip;</span>
+        </span>
+      </button>
+      <button class="dash-card" id="card-open-budget">
+        <span class="dc-icon ic-sage">&#128176;</span>
+        <span>
+          <span class="dc-title">Begroting</span>
+          <span class="dc-sub" id="dc-budget-sub">&hellip;</span>
+        </span>
+      </button>
+      <div class="dash-card" style="opacity:0.5;cursor:default;">
+        <span class="dc-icon ic-gold">&#127860;</span>
+        <span>
+          <span class="dc-title">Ete-beplanner</span>
+          <span class="dc-sub">Binnekort beskikbaar</span>
+        </span>
+      </div>
+      <div class="dash-card" style="opacity:0.5;cursor:default;">
+        <span class="dc-icon ic-clay">&#128218;</span>
+        <span>
+          <span class="dc-title">Resepteboks</span>
+          <span class="dc-sub">Binnekort beskikbaar</span>
+        </span>
+      </div>
+      <div class="dash-card" style="opacity:0.5;cursor:default;">
+        <span class="dc-icon ic-sky">&#128193;</span>
+        <span>
+          <span class="dc-title">Dokumente</span>
+          <span class="dc-sub">Binnekort beskikbaar</span>
+        </span>
+      </div>
+      <div class="dash-card" style="opacity:0.5;cursor:default;">
+        <span class="dc-icon ic-sage">&#127881;</span>
+        <span>
+          <span class="dc-title">Spesiale dae</span>
+          <span class="dc-sub">Binnekort beskikbaar</span>
+        </span>
+      </div>
+      <div class="dash-card wide-card" style="opacity:0.5;cursor:default;">
+        <span class="dc-icon ic-gold">&#128203;</span>
+        <span>
+          <span class="dc-title">Lyste</span>
+          <span class="dc-sub">Binnekort beskikbaar</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ KALENDER ============ -->
+  <div id="view-calendar" class="view hidden">
+    <nav class="topbar">
+      <button id="btn-back-from-calendar">&larr; Terug</button>
+      <div class="kid-title">Kalender</div>
+    </nav>
+    <div class="card">
+      <span class="eyebrow">VOEG 'N GEBEURTENIS BY</span>
+      <label class="field-label">DATUM</label>
+      <input type="date" id="event-date-input" class="plain-input">
+      <label class="field-label">TYD (opsioneel)</label>
+      <input type="time" id="event-time-input" class="plain-input">
+      <label class="field-label">TITEL</label>
+      <input type="text" id="event-title-input" class="plain-input" placeholder="bv. Sokker-oefening">
+      <label class="field-label">VIR WIE</label>
+      <select id="event-for-input" class="plain-input"></select>
+      <label class="field-label">NOTAS (opsioneel)</label>
+      <input type="text" id="event-notes-input" class="plain-input" placeholder="bv. Onthou tekkies">
+      <button class="btn-save-bar" id="btn-add-event">Voeg by</button>
+    </div>
+    <div class="card">
+      <span class="eyebrow">AANKOMENDE GEBEURE</span>
+      <div id="calendar-list"></div>
+    </div>
+  </div>
+
+  <!-- ============ BEGROTING ============ -->
+  <div id="view-budget" class="view hidden">
+    <nav class="topbar">
+      <button id="btn-back-from-budget">&larr; Terug</button>
+      <div class="kid-title">Begroting</div>
+    </nav>
+    <div class="card">
+      <span class="eyebrow">HIERDIE MAAND</span>
+      <div id="budget-categories-list"></div>
+    </div>
+    <div class="card">
+      <span class="eyebrow">VOEG ONKOSTE BY</span>
+      <label class="field-label">KATEGORIE</label>
+      <select id="expense-category-input" class="plain-input"></select>
+      <label class="field-label">BEDRAG (R)</label>
+      <input type="number" id="expense-amount-input" class="plain-input" min="0" step="0.01">
+      <label class="field-label">NOTA (opsioneel)</label>
+      <input type="text" id="expense-note-input" class="plain-input" placeholder="bv. Groente by Checkers">
+      <button class="btn-save-bar" id="btn-add-expense">Voeg by</button>
+    </div>
+    <div class="card">
+      <span class="eyebrow">ONLANGSE ONKOSTES</span>
+      <div id="expense-list"></div>
+    </div>
+    <div class="card">
+      <span class="eyebrow">KATEGORIE&Euml; BESTUUR</span>
+      <div id="budget-categories-editor"></div>
+      <button class="btn-add" id="btn-add-category">+ Voeg nuwe kategorie by</button>
+      <button class="btn-save-bar" id="btn-save-categories">Stoor kategorie&euml;</button>
     </div>
   </div>
 
@@ -791,6 +909,9 @@ const KEY_REWARDS = 'gtb_rewards';
 const KEY_REQUESTS = 'gtb_requests';
 const KEY_AFFIRMATION_OVERRIDES = 'gtb_affirmation-overrides';
 const KEY_DEDUCTIONS = 'gtb_deductions';
+const KEY_EVENTS = 'gtb_events';
+const KEY_BUDGET_CATEGORIES = 'gtb_budget_categories';
+const KEY_EXPENSES = 'gtb_expenses';
 const dayKey = (date, kidId) => `gtb_day:${date}:${kidId}`;
 
 const DEFAULT_TASKS = [
@@ -808,6 +929,13 @@ const DEFAULT_REWARDS = [
   { id:'rwd2', name:'Ekstra 30 minute skermtyd', pointsCost:25, active:true },
   { id:'rwd3', name:'Speel-datum met \u2019n vriend', pointsCost:60, active:true },
   { id:'rwd4', name:'Spesiale nagereg kies', pointsCost:20, active:true }
+];
+
+const DEFAULT_BUDGET_CATEGORIES = [
+  { id:'cat_kos', name:'Kos & groceries', monthlyLimit:4000 },
+  { id:'cat_vervoer', name:'Vervoer', monthlyLimit:1500 },
+  { id:'cat_vermaak', name:'Vermaak', monthlyLimit:800 },
+  { id:'cat_ander', name:'Ander', monthlyLimit:1000 }
 ];
 
 const BIBLE_ROTATION = [
@@ -855,6 +983,9 @@ let rewards = null;
 let requests = null;
 let affirmationOverrides = null;
 let deductions = null;
+let events = null;
+let budgetCategories = null;
+let expenses = null;
 let deductTargetKidId = null;
 let currentKidId = null;
 let currentDayRecord = null;
@@ -995,6 +1126,9 @@ function onRemoteDataChanged(){
     else if(currentViewId === 'view-parent') renderParentDashboardCards();
     else if(currentViewId === 'view-parent-summary') renderParentSummary();
     else if(currentViewId === 'view-requests') renderRequestsView();
+    else if(currentViewId === 'view-family-hub') renderFamilyHubCards();
+    else if(currentViewId === 'view-calendar') renderCalendarView();
+    else if(currentViewId === 'view-budget') renderBudgetView();
   }catch(e){ console.error('Re-render after live update failed', e); }
 }
 function setupRealtimeSubscriptions(){
@@ -1014,6 +1148,9 @@ function setupRealtimeSubscriptions(){
   bind(KEY_REWARDS, v => { if(v) rewards = v; });
   bind(KEY_REQUESTS, v => { requests = v || []; });
   bind(KEY_DEDUCTIONS, v => { deductions = v || []; });
+  bind(KEY_EVENTS, v => { events = v || []; });
+  bind(KEY_BUDGET_CATEGORIES, v => { if(v) budgetCategories = v; });
+  bind(KEY_EXPENSES, v => { expenses = v || []; });
 }
 
 function emptyDayRecord(){
@@ -1138,6 +1275,15 @@ async function loadAppData(){
   if(!affirmationOverrides) affirmationOverrides = {};
   deductions = await getJSON(KEY_DEDUCTIONS);
   if(!deductions) deductions = [];
+  events = await getJSON(KEY_EVENTS);
+  if(!events) events = [];
+  budgetCategories = await getJSON(KEY_BUDGET_CATEGORIES);
+  if(!budgetCategories){
+    budgetCategories = JSON.parse(JSON.stringify(DEFAULT_BUDGET_CATEGORIES));
+    await setJSON(KEY_BUDGET_CATEGORIES, budgetCategories);
+  }
+  expenses = await getJSON(KEY_EXPENSES);
+  if(!expenses) expenses = [];
 
   pins = await getJSON(KEY_PINS);
   parentAuth = await getJSON(KEY_PARENT_AUTH);
@@ -1348,6 +1494,216 @@ document.getElementById('btn-open-parent').onclick = () => {
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
+
+/* ===================================================================
+   FAMILY HUB (shared, non-PIN-gated family features)
+   =================================================================== */
+document.getElementById('btn-open-family-hub').onclick = () => {
+  renderFamilyHubCards();
+  showView('view-family-hub');
+};
+document.getElementById('btn-back-from-family-hub').onclick = () => {
+  showView('view-select');
+};
+function renderFamilyHubCards(){
+  const upcoming = events.filter(e => e.date >= todayStr());
+  const calSub = document.getElementById('dc-calendar-sub');
+  if(calSub) calSub.textContent = upcoming.length ? `${upcoming.length} aankomende gebeurtenis${upcoming.length>1?'se':''}` : 'Geen gebeure geskeduleer nie';
+
+  const monthPrefix = todayStr().slice(0,7);
+  const monthExpenses = expenses.filter(e => e.date && e.date.slice(0,7) === monthPrefix);
+  const totalSpent = monthExpenses.reduce((s,e)=>s+(e.amount||0), 0);
+  const totalBudget = budgetCategories.reduce((s,c)=>s+(c.monthlyLimit||0), 0);
+  const budgetSub = document.getElementById('dc-budget-sub');
+  if(budgetSub) budgetSub.textContent = `R${formatRand(totalSpent)} van R${formatRand(totalBudget)} bestee`;
+}
+
+/* ===================================================================
+   KALENDER
+   =================================================================== */
+document.getElementById('card-open-calendar').onclick = () => {
+  populateEventForKidSelect();
+  document.getElementById('event-date-input').value = todayStr();
+  renderCalendarView();
+  showView('view-calendar');
+};
+document.getElementById('btn-back-from-calendar').onclick = () => {
+  renderFamilyHubCards();
+  showView('view-family-hub');
+};
+function populateEventForKidSelect(){
+  const sel = document.getElementById('event-for-input');
+  sel.innerHTML = kidOptionsHtml('all');
+}
+function renderCalendarView(){
+  const list = document.getElementById('calendar-list');
+  const sorted = [...events].sort((a,b)=> (a.date+(a.time||'00:00')).localeCompare(b.date+(b.time||'00:00')));
+  const upcoming = sorted.filter(e=>e.date >= todayStr());
+  if(upcoming.length === 0){
+    list.innerHTML = '<p style="color:var(--ink-soft);font-size:13px;">Geen aankomende gebeure nie.</p>';
+    return;
+  }
+  let lastDate = null;
+  let html = '';
+  upcoming.forEach(e=>{
+    if(e.date !== lastDate){
+      html += `<div style="font-family:var(--font-mono);font-size:11px;color:var(--gold-deep);letter-spacing:1px;margin:14px 0 4px;">${prettyDate(e.date)}</div>`;
+      lastDate = e.date;
+    }
+    const kid = e.forKid && e.forKid !== 'all' ? profiles.kids.find(k=>k.id===e.forKid) : null;
+    const kidLabel = kid ? kid.name : 'Almal';
+    html += `
+      <div class="ledger-row" style="cursor:default;">
+        <span class="task-name">
+          ${e.time ? `<strong style="font-family:var(--font-mono);font-size:13px;">${escapeHtml(e.time)}</strong> &middot; ` : ''}${escapeHtml(e.title)}
+          <div style="font-size:11.5px;color:var(--ink-soft);margin-top:2px;">${escapeHtml(kidLabel)}${e.notes ? ' &middot; ' + escapeHtml(e.notes) : ''}</div>
+        </span>
+        <button data-delete-event="${e.id}" style="background:none;border:none;color:var(--clay-deep);font-size:20px;padding:4px 8px;">&times;</button>
+      </div>`;
+  });
+  list.innerHTML = html;
+  list.querySelectorAll('[data-delete-event]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      events = events.filter(e=>e.id !== btn.dataset.deleteEvent);
+      await setJSON(KEY_EVENTS, events);
+      renderCalendarView();
+      showToast('Gebeurtenis verwyder.');
+    });
+  });
+}
+document.getElementById('btn-add-event').onclick = async () => {
+  const date = document.getElementById('event-date-input').value;
+  const time = document.getElementById('event-time-input').value;
+  const title = document.getElementById('event-title-input').value.trim();
+  const forKid = document.getElementById('event-for-input').value;
+  const notes = document.getElementById('event-notes-input').value.trim();
+  if(!date){ showToast('Kies asseblief \u2019n datum.'); return; }
+  if(!title){ showToast('Gee die gebeurtenis \u2019n titel.'); return; }
+  events.push({ id:'evt_'+Date.now(), date, time, title, forKid, notes, createdAt:Date.now() });
+  await setJSON(KEY_EVENTS, events);
+  document.getElementById('event-title-input').value = '';
+  document.getElementById('event-time-input').value = '';
+  document.getElementById('event-notes-input').value = '';
+  showToast('Gebeurtenis bygevoeg!');
+  renderCalendarView();
+};
+
+/* ===================================================================
+   BEGROTING
+   =================================================================== */
+document.getElementById('card-open-budget').onclick = () => {
+  renderBudgetView();
+  showView('view-budget');
+};
+document.getElementById('btn-back-from-budget').onclick = () => {
+  renderFamilyHubCards();
+  showView('view-family-hub');
+};
+function currentMonthPrefix(){ return todayStr().slice(0,7); }
+function populateExpenseCategorySelect(){
+  const sel = document.getElementById('expense-category-input');
+  const prevVal = sel.value;
+  sel.innerHTML = budgetCategories.map(c=>`<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+  if(budgetCategories.some(c=>c.id===prevVal)) sel.value = prevVal;
+}
+function renderBudgetView(){
+  populateExpenseCategorySelect();
+  const monthPrefix = currentMonthPrefix();
+  const monthExpenses = expenses.filter(e=>e.date && e.date.slice(0,7)===monthPrefix);
+  const catList = document.getElementById('budget-categories-list');
+  catList.innerHTML = budgetCategories.map(c=>{
+    const spent = monthExpenses.filter(e=>e.categoryId===c.id).reduce((s,e)=>s+(e.amount||0),0);
+    const limit = c.monthlyLimit || 0;
+    const pct = limit > 0 ? Math.min(100, Math.round((spent/limit)*100)) : 0;
+    const over = limit > 0 && spent > limit;
+    return `
+      <div style="margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:4px;">
+          <span>${escapeHtml(c.name)}</span>
+          <span style="font-family:var(--font-mono);color:${over?'var(--clay-deep)':'var(--ink-soft)'};">R${formatRand(spent)} / R${formatRand(limit)}</span>
+        </div>
+        <div style="background:var(--bg-deep);border-radius:8px;height:8px;overflow:hidden;">
+          <div style="width:${pct}%;height:100%;background:${over?'var(--clay)':'var(--sage-deep)'};"></div>
+        </div>
+      </div>`;
+  }).join('') || '<p style="color:var(--ink-soft);font-size:13px;">Geen kategorie&euml; ingestel nie.</p>';
+
+  const expenseList = document.getElementById('expense-list');
+  const recent = [...expenses].sort((a,b)=>b.createdAt-a.createdAt).slice(0,10);
+  if(recent.length === 0){
+    expenseList.innerHTML = '<p style="color:var(--ink-soft);font-size:13px;font-style:italic;">Nog geen onkostes gelog nie.</p>';
+  } else {
+    expenseList.innerHTML = recent.map(e=>{
+      const cat = budgetCategories.find(c=>c.id===e.categoryId);
+      return `<div class="mr-row"><span>${escapeHtml(cat?cat.name:'?')}${e.note ? ' &middot; '+escapeHtml(e.note):''}</span><span style="font-family:var(--font-mono);color:var(--clay-deep);">-R${formatRand(e.amount)}</span></div>`;
+    }).join('');
+  }
+  renderBudgetCategoriesEditor();
+}
+document.getElementById('btn-add-expense').onclick = async () => {
+  const categoryId = document.getElementById('expense-category-input').value;
+  const amount = parseFloat(document.getElementById('expense-amount-input').value) || 0;
+  const note = document.getElementById('expense-note-input').value.trim();
+  if(!categoryId){ showToast('Kies \u2019n kategorie.'); return; }
+  if(!amount || amount <= 0){ showToast('Gee \u2019n geldige bedrag.'); return; }
+  expenses.push({ id:'exp_'+Date.now(), date:todayStr(), categoryId, amount, note, createdAt:Date.now() });
+  await setJSON(KEY_EXPENSES, expenses);
+  document.getElementById('expense-amount-input').value = '';
+  document.getElementById('expense-note-input').value = '';
+  showToast('Onkoste gelog.');
+  renderBudgetView();
+};
+function renderBudgetCategoriesEditor(){
+  const container = document.getElementById('budget-categories-editor');
+  container.innerHTML = budgetCategories.map(c=>`
+    <div class="editor-row" data-id="${c.id}">
+      <label>KATEGORIE</label>
+      <input type="text" class="bc-name" value="${escapeHtml(c.name)}">
+      <label>MAANDELIKSE LIMIET (R)</label>
+      <input type="number" class="bc-limit" value="${c.monthlyLimit||0}" min="0">
+      <div class="erow-bottom">
+        <span></span>
+        <button class="erow-delete" data-delete>Verwyder</button>
+      </div>
+    </div>
+  `).join('');
+  container.querySelectorAll('[data-delete]').forEach(btn=>{
+    btn.addEventListener('click', ()=> btn.closest('.editor-row').remove());
+  });
+}
+document.getElementById('btn-add-category').onclick = () => {
+  const container = document.getElementById('budget-categories-editor');
+  const newId = 'cat_' + Date.now();
+  const div = document.createElement('div');
+  div.className = 'editor-row';
+  div.dataset.id = newId;
+  div.innerHTML = `
+    <label>KATEGORIE</label>
+    <input type="text" class="bc-name" value="" placeholder="Nuwe kategorie">
+    <label>MAANDELIKSE LIMIET (R)</label>
+    <input type="number" class="bc-limit" value="500" min="0">
+    <div class="erow-bottom">
+      <span></span>
+      <button class="erow-delete">Verwyder</button>
+    </div>
+  `;
+  div.querySelector('.erow-delete').addEventListener('click', ()=>div.remove());
+  container.appendChild(div);
+};
+document.getElementById('btn-save-categories').onclick = async () => {
+  const rows = document.querySelectorAll('#budget-categories-editor .editor-row');
+  const newCats = [];
+  rows.forEach(row=>{
+    const id = row.dataset.id;
+    const name = row.querySelector('.bc-name').value.trim() || 'Kategorie';
+    const monthlyLimit = parseFloat(row.querySelector('.bc-limit').value) || 0;
+    newCats.push({ id, name, monthlyLimit });
+  });
+  budgetCategories = newCats;
+  await setJSON(KEY_BUDGET_CATEGORIES, budgetCategories);
+  showToast('Kategorie\u00eb gestoor.');
+  renderBudgetView();
+};
 
 /* ===================================================================
    PIN ENTRY (kid)
